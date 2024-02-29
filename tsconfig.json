@@ -1,4 +1,7 @@
 {
+  "typeAcquisition": {
+  "enable": true
+},
   "compilerOptions": {
     /* Base Options: */
     "esModuleInterop": true,
@@ -8,7 +11,7 @@
     "resolveJsonModule": true,
     "moduleDetection": "force",
     "isolatedModules": true,
-
+    "importHelpers": true,
     /* Strictness */
     "strict": true,
     "noUncheckedIndexedAccess": true,

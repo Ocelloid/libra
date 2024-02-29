@@ -14,6 +14,15 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+model WeightedEntry {
+    id           String     @id @default(cuid())
+    content      String 
+    userId       String
+    user         User       @relation(fields:[userId], references: [id], onDelete: Cascade)
+    dateCreated  DateTime   @default(now())
+    weightRating Int?
+}
+
 model Post {
     id        Int      @id @default(autoincrement())
     name      String
@@ -54,14 +63,15 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
-    name          String?
-    email         String?   @unique
-    emailVerified DateTime?
-    image         String?
-    accounts      Account[]
-    sessions      Session[]
-    posts         Post[]
+    id              String    @id @default(cuid())
+    name            String?
+    email           String?   @unique
+    emailVerified   DateTime?
+    image           String?
+    accounts        Account[]
+    sessions        Session[]
+    posts           Post[]
+    weightedEntries WeightedEntry[]
 }
 
 model VerificationToken {

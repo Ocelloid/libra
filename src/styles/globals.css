@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+    @apply bg-gray-950
+}
+
+.sec-container {
+    @apply mt-32 flex flex-col justify-center gap-10 
+}
