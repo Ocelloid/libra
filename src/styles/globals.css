@@ -2,10 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
+html, body {
     @apply bg-gray-950
 }
 
 .sec-container {
     @apply mt-32 flex flex-col justify-center gap-10 
+}
+
+div::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Hide scrollbar for IE, Edge and Firefox */
+div {
+-ms-overflow-style: none;  /* IE and Edge */
+scrollbar-width: none;  /* Firefox */
 }

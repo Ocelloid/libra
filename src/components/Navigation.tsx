@@ -9,7 +9,7 @@ const Navigation = () => {
     const {data: sessionData} = useSession();
 
     if (sessionData) return (
-        <nav className="flex flex-col md:flex-row absolute left-0 top-0 z-10 w-full items-center justify-between gap-8 bg-slate-950 p-7 backdrop-blur-md bg-transparent md:fixed md:gap-0">
+        <nav className="flex flex-col md:flex-row absolute left-0 top-0 z-10 w-full items-center justify-between gap-8 p-7 backdrop-blur-md bg-transparent md:fixed md:gap-0">
             <div className="flex w-full items-center justify-between text-neutral-100 font-poppins font-bold lowercase tracking-tight md:text-4xl">
                 <Link href="/">Libra</Link>
                 <div className="md:hidden flex" onClick={() => setIsOpen(!isOpen)}>

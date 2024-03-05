@@ -20,7 +20,7 @@ model WeightedEntry {
     userId       String
     user         User       @relation(fields:[userId], references: [id], onDelete: Cascade)
     dateCreated  DateTime   @default(now())
-    weightRating Int?
+    weightRating Int? 
 }
 
 model Post {

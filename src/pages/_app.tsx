@@ -9,6 +9,8 @@ import {Poppins, Montserrat} from "next/font/google";
 import "~/styles/globals.css";
 import Navigation from "../components/Navigation";
 
+import {NextUIProvider} from "@nextui-org/react";
+
 const poppinsFont = Poppins({
   subsets: ["latin", "latin-ext"],
   weight: ["100", "400", "800"],
@@ -26,12 +28,14 @@ const MyApp: AppType<{ session: Session | null }> = ({
   pageProps: { session, ...pageProps },
 }) => {
   return (
-    <div className={`${poppinsFont.variable} ${montserratFont.variable}`}>
-      <SessionProvider session={session}>
-        <Navigation/>
-        <Component {...pageProps} />
-      </SessionProvider>
-    </div>
+    <NextUIProvider>
+      <div className={`${poppinsFont.variable} ${montserratFont.variable}`}>
+          <SessionProvider session={session}>
+            <Component {...pageProps} />
+            <Navigation/> 
+          </SessionProvider>
+      </div>
+    </NextUIProvider>
   );
 };
 
