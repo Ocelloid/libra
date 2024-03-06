@@ -16,6 +16,7 @@ datasource db {
 
 model WeightedEntry {
     id           String     @id @default(cuid())
+    title        String    
     content      String     
     userId       String
     parentId     String     @default("")

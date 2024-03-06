@@ -22,8 +22,10 @@ const Entry = () => {
 
     const [parentId,     setParentId]     = useState<string>("");
     const [entryUserId,  setEntryUserId]  = useState<string>("");
+    const [entryTitle,   setEntryTitle]   = useState<string>("");
     const [entryContent, setEntryContent] = useState<string>("");
     const [weightRating, setWeightRating] = useState<number>(50);
+    const [childTitle,   setChildTitle]   = useState<string>("");
     const [childContent, setChildContent] = useState<string>("");
     const [childRating,  setChildRating]  = useState<number>(50);
     const [childEntries, setChildEntries] = useState<Entry[]>([]);
@@ -34,6 +36,7 @@ const Entry = () => {
         {   
             enabled: entryId !== undefined,
             onSuccess: (data: Entry) => {
+                setEntryTitle(data.title);
                 setParentId(data.parentId);
                 setEntryUserId(data.userId);
                 setEntryContent(data.content);
@@ -71,6 +74,7 @@ const Entry = () => {
                 {
                     id: newEntry.id,
                     parentId: entryId,
+                    title: childTitle,
                     content: childContent,
                     weightRating: childRating,
                     userId: entryUserId,
@@ -79,6 +83,9 @@ const Entry = () => {
             ];
             setChildEntries(newChildEntries);
             setIsEditing(false);
+            setChildTitle("");
+            setChildContent("");
+            setChildRating(50);
         }
     });
 
@@ -97,12 +104,12 @@ const Entry = () => {
 
     const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        updateMutation({ id: entryId, content: entryContent, weight: weightRating });
+        updateMutation({ id: entryId, content: entryContent, title: entryTitle, weight: weightRating });
     };
 
     const handleNewChild = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        childMutation({content: childContent, weight: childRating, parentId: entryId});
+        childMutation({content: childContent, title: childTitle, weight: childRating, parentId: entryId});
     }
 
     const handleWeightChange = (entryId: string, weight: number, commit: boolean | undefined) => {
@@ -131,9 +138,9 @@ const Entry = () => {
     if (sessionStatus === "loading" || isLoading || isUpdating || isChildUpdating) { return <Loading/> }
     if (!sessionData) return;
     return <>
-        <Head><title>Запись</title></Head>
+        <Head><title>Задача</title></Head>
 
-        <div className="h-screen w-screen g-cover bg-center flex flex-col" 
+        <div className="h-screen w-screen g-cover bg-center flex flex-col overflow-x-hidden overflow-y-auto" 
             style={{backgroundImage: `url(/background.png)`}}
         >
             {isEditing ? <section className="sec-container">
@@ -151,13 +158,19 @@ const Entry = () => {
                                     <TrashIcon width={25} className="text-gray-50"/>
                                 </button>
                             </div>         
-                            <form className="flex w-full flex-col justify-center gap-5" onSubmit={e => handleFormSubmit(e)}>                
+                            <form className="flex w-full flex-col justify-center gap-5" onSubmit={e => handleFormSubmit(e)}>
+                                <input 
+                                    required
+                                    value={entryTitle}
+                                    onChange={e => setEntryTitle(e.target.value)}
+                                    placeholder="Название новой задачи" 
+                                    className="font-montserrat mx-auto rounded-sm border border-slate-800 bg-gray-800 p-5 tracking-wide w-full"/>          
                                 <textarea 
                                     cols={30} 
                                     rows={3} 
                                     required
                                     value={entryContent}
-                                    onChange={value => setEntryContent(value.target.value)}
+                                    onChange={e => setEntryContent(e.target.value)}
                                     placeholder="Опиши свои мысли" 
                                     className="font-montserrat mx-auto rounded-sm border border-slate-800 bg-gray-800 p-5 tracking-wide w-full">
                                 </textarea>
@@ -196,18 +209,24 @@ const Entry = () => {
                                     Обновить
                                 </button>
                             </form>
-                            <div className="flex flex-row items-center justify-between pt-10">
+                            <div className="flex flex-row items-center justify-between pt-5">
                                 <h1 className="font-montserrat text-3xl font-extrabold text-gray-50">
                                     Новая подзадача
                                 </h1>
                             </div> 
                             <form className="flex w-full flex-col justify-center gap-5" onSubmit={e => handleNewChild(e)}>   
+                                <input 
+                                    required
+                                    value={childTitle}
+                                    onChange={e => setChildTitle(e.target.value)}
+                                    placeholder="Название новой подзадачи" 
+                                    className="font-montserrat mx-auto rounded-sm border border-slate-800 bg-gray-800 p-5 tracking-wide w-full"/>
                                 <textarea 
                                     cols={30} 
                                     rows={3} 
                                     required
                                     value={childContent}
-                                    onChange={value => setChildContent(value.target.value)}
+                                    onChange={e => setChildContent(e.target.value)}
                                     placeholder="Новая подзадача" 
                                     className="font-montserrat mx-auto rounded-sm border border-slate-800 bg-gray-800 p-5 tracking-wide w-full">
                                 </textarea>
@@ -263,7 +282,11 @@ const Entry = () => {
                             <button className="rounded-sm bg-gradient-to-br from-gray-700 to-gray-800 p-2" onClick={() => setIsEditing(true)}>
                                 <PencilIcon width={25} className="text-gray-50"/>
                             </button>
-                        </div>                      
+                        </div>          
+                        <input 
+                            disabled
+                            value={entryTitle}
+                            className="font-montserrat mx-auto rounded-sm border border-slate-800 bg-gray-800 p-5 tracking-wide w-full"/>            
                         <textarea 
                             cols={30} 
                             rows={3} 

@@ -53,7 +53,7 @@ const Card: React.FC<{
                     href={`/entries/${entry.id}`} 
                     className="">
                     <p className="font-montserrat px-2 text-lg text-gray-50">
-                        {entry.content}
+                        {entry.title}
                     </p>
                     <p className="text-gray-500 px-2 font-montserrat">
                         {moment(entry.dateCreated).format("D MMMM YYYY HH:mm")}

@@ -3,6 +3,7 @@ import { createTRPCRouter, protectedProcedure} from "~/server/api/trpc";
 
 export interface Entry {
     id: string,
+    title: string,
     content: string,
     userId: string,
     parentId: string,
@@ -14,13 +15,14 @@ export interface Entry {
 export const weightedEntryRouter = createTRPCRouter({
 
     createEntry: protectedProcedure
-        .input(z.object({ content: z.string(), weight: z.number() }))
+        .input(z.object({ content: z.string(), title: z.string(), weight: z.number() }))
         .mutation(async ({ ctx, input }) => {
             const {db, session} = ctx;
-            const {content, weight} = input;
+            const {content, title, weight} = input;
 
             const newWeightedEntry = await db.weightedEntry.create({
                 data: {
+                    title: title,
                     content: content,
                     weightRating: weight,
                     userId: session.user.id
@@ -32,13 +34,14 @@ export const weightedEntryRouter = createTRPCRouter({
         }),
 
     createChild: protectedProcedure
-        .input(z.object({ content: z.string(), weight: z.number(), parentId: z.string() }))
+        .input(z.object({ content: z.string(), weight: z.number(), title: z.string(), parentId: z.string() }))
         .mutation(async ({ ctx, input }) => {
             const {db, session} = ctx;
-            const {content, weight, parentId} = input;
+            const {content, weight, title, parentId} = input;
 
             const newWeightedEntry = await db.weightedEntry.create({
                 data: {
+                    title: title,
                     content: content,
                     weightRating: weight,
                     userId: session.user.id,
@@ -81,10 +84,10 @@ export const weightedEntryRouter = createTRPCRouter({
         }),
 
     updateEntry: protectedProcedure
-        .input(z.object({ id: z.string(), content: z.string(), weight: z.number() }))
+        .input(z.object({ id: z.string(), content: z.string(), title: z.string(), weight: z.number() }))
         .mutation(async ({ ctx, input }) => {     
             const {db, session} = ctx;
-            const {id, content, weight} = input;
+            const {id, content, title, weight} = input;
 
             await db.weightedEntry.update({
                 where: {
@@ -94,6 +97,7 @@ export const weightedEntryRouter = createTRPCRouter({
                 data: {
                     weightRating: weight,
                     content: content,
+                    title: title,
                 }
             })
         }),
