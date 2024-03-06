@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import Loading from "~/components/Loading";
 import { api } from "~/utils/api";
 import 'moment/locale/ru';
-import { BackwardIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
+import { ArrowUpLeftIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { Button, Slider } from "@nextui-org/react";
 import type { Entry } from "~/server/api/routers/weightedentry";
 import FlipMove from "react-flip-move";
@@ -151,7 +151,7 @@ const Entry = () => {
                         <div className="mx-auto flex md:w-3/4 lg:w-2/3 xl:w-1/2 2xl:w-3/7 flex-col gap-5">
                             <div className="flex flex-row items-center justify-between">
                                 <button className="rounded-sm bg-gradient-to-br from-gray-700 to-gray-800 p-2" onClick={() => setIsEditing(false)}>
-                                    <BackwardIcon width={25} className="text-gray-50"/>
+                                    <ArrowUpLeftIcon width={25} className="text-gray-50"/>
                                 </button>
                                 <h1 className="font-montserrat text-3xl font-extrabold text-gray-50">
                                     {moment(entryData?.dateCreated).format("D MMMM YYYY HH:mm")}
@@ -276,7 +276,7 @@ const Entry = () => {
                     <div className="mx-auto flex md:w-3/4 lg:w-2/3 xl:w-1/2 2xl:w-3/7 flex-col gap-5">
                         <div className="flex flex-row items-center justify-between">
                             <button className="rounded-sm bg-gradient-to-br from-gray-700 to-gray-800 p-2" onClick={() => loadParent()}>
-                                <BackwardIcon width={25} className="text-gray-50"/>
+                                <ArrowUpLeftIcon width={25} className="text-gray-50"/>
                             </button>
                             <h1 className="font-montserrat text-3xl font-extrabold text-gray-50">
                                 {moment(entryData?.dateCreated).format("D MMMM YYYY HH:mm")}

@@ -1,11 +1,7 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
-import Link from "next/link";
-
-import { api } from "~/utils/api";
 
 export default function Home() {
-  const hello = api.post.hello.useQuery({ text: "from tRPC" });
   const { data: sessionData } = useSession();
 
   return (
@@ -23,12 +19,13 @@ export default function Home() {
             Libra
             <span className="font-montserrat text-white text-2xl font-normal">взвешенные списки</span>
           </h1>
+          <AuthShowcase/>
           <button 
             onClick={sessionData? () => void signOut(sessionData) : () => void signIn()}
             className="mx-auto rounded-sm bg-gradient-to-br from-indigo-500 to-indigo-600 px-20 py-2 font-montserrat text-2xl font-bold text-neutral-50 shadow-sm"
           >
             {sessionData ? "Выйти" : "Войти"}
-            </button>
+          </button>
         </div>
       </div>
     </>
@@ -37,24 +34,11 @@ export default function Home() {
 
 function AuthShowcase() {
   const { data: sessionData } = useSession();
-
-  const { data: secretMessage } = api.post.getSecretMessage.useQuery(
-    undefined, // no input
-    { enabled: sessionData?.user !== undefined }
-  );
-
   return (
     <div className="flex flex-col items-center justify-center gap-4">
       <p className="text-center text-2xl text-white">
-        {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
-        {secretMessage && <span> - {secretMessage}</span>}
+        {sessionData && <span>Вы зашли как {sessionData.user?.name}</span>}
       </p>
-      <button
-        className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
-        onClick={sessionData ? () => void signOut() : () => void signIn()}
-      >
-        {sessionData ? "Sign out" : "Sign in"}
-      </button>
     </div>
   );
 }

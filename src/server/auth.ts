@@ -8,6 +8,7 @@ import {
 import { type Adapter } from "next-auth/adapters";
 import DiscordProvider from "next-auth/providers/discord";
 import GitHubProvider from "next-auth/providers/github";
+import YandexProvider from "next-auth/providers/yandex";
 
 import { env } from "~/env";
 import { db } from "~/server/db";
@@ -57,6 +58,10 @@ export const authOptions: NextAuthOptions = {
     GitHubProvider({
       clientId: env.GITHUB_CLIENT_ID,
       clientSecret: env.GITHUB_CLIENT_SECRET,
+    }),
+    YandexProvider({
+      clientId: env.YANDEX_CLIENT_ID,
+      clientSecret: env.YANDEX_CLIENT_SECRET
     }),
     /**
      * ...add more providers here.
