@@ -18,7 +18,7 @@ const Card: React.FC<{
                 ? entry.childEntries.sort((a: WeightedEntry, b: WeightedEntry) => b.weightRating - a.weightRating)
                 : []);
 
-        const { mutate: updateEntryMutation, statusWeight, isLoadingWeight } = api.weightedEntry.updateEntryWeight.useMutation();
+        const { mutate: updateEntryMutation } = api.weightedEntry.updateEntryWeight.useMutation();
 
         const handleChildEntriesWeightChange = (entryId: string, weight: number, commit: boolean | undefined) => {
             console.log(entryId, weight, commit)

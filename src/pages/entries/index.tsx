@@ -25,7 +25,7 @@ const Entries = () => {
     }, [replace, sessionStatus]);
 
 
-    const {data: entriesData, status, isLoading} = api.weightedEntry.getAllEntries.useQuery(
+    const {isLoading} = api.weightedEntry.getAllEntries.useQuery(
         undefined, 
         {
             enabled: sessionStatus === "authenticated",
@@ -38,7 +38,7 @@ const Entries = () => {
         }
     );
 
-    const { mutate: updateEntryMutation, statusWeight, isLoadingWeight } = api.weightedEntry.updateEntryWeight.useMutation();
+    const { mutate: updateEntryMutation } = api.weightedEntry.updateEntryWeight.useMutation();
 
     const handleWeightChange = (entryId: string, weight: number, commit: boolean | undefined) => {
         if (isNaN(Number(weight))) return;
@@ -63,7 +63,7 @@ const Entries = () => {
         else setEntries(newEntries);
     }
 
-    if (sessionStatus === "loading" || isLoading || isLoadingWeight) { return <Loading/> }
+    if (sessionStatus === "loading" || isLoading ) { return <Loading/> }
     if (!sessionData) return;
     return (<>
         <Head>

@@ -40,7 +40,7 @@ const Entry = () => {
     const [isEditing,    setIsEditing]    = useState<boolean>(false);
     const [isAdding,     setIsAdding]     = useState<boolean>(false);
 
-    const {data: entryData, status, isLoading} = api.weightedEntry.getEntryById.useQuery(
+    const {data: entryData, isLoading} = api.weightedEntry.getEntryById.useQuery(
         {id: entryId}, 
         {   
             enabled: (entryId !== undefined && entryId!== ""),
@@ -54,12 +54,12 @@ const Entry = () => {
         }
     );
 
-    const {data: childEntriesData, statusChildEntries, isLoadingChildEntries} = api.weightedEntry.getChildEntriesById.useQuery(
-        {parentId: entryId}, 
-        {   
-            enabled: (entryId !== undefined && entryId!== ""),
+    api.weightedEntry.getChildEntriesById.useQuery(
+        { parentId: entryId },
+        {
+            enabled: (entryId !== undefined && entryId !== ""),
             onSuccess: (data: WeightedEntry[]) => {
-                setChildEntries(data.sort((a,b) => b.weightRating - a.weightRating));
+                setChildEntries(data.sort((a, b) => b.weightRating - a.weightRating));
             }
         }
     );
@@ -70,13 +70,13 @@ const Entry = () => {
         }
     });
 
-    const { mutate: updateMutation, updateStatus, isUpdating } = api.weightedEntry.updateEntry.useMutation({
+    const { mutate: updateMutation } = api.weightedEntry.updateEntry.useMutation({
         onSuccess() {
             setIsEditing(false);
         }
     });
 
-    const { mutate: childMutation, updateChildStatus, isChildUpdating } = api.weightedEntry.createChild.useMutation({
+    const { mutate: childMutation } = api.weightedEntry.createChild.useMutation({
         onSuccess(newEntry) {
             const newChildEntries: WeightedEntry[] = [
                 ...childEntries, 
@@ -98,7 +98,7 @@ const Entry = () => {
         }
     });
 
-    const { mutate: updateEntryMutation, statusWeight, isLoadingWeight } = api.weightedEntry.updateEntryWeight.useMutation();
+    const { mutate: updateEntryMutation } = api.weightedEntry.updateEntryWeight.useMutation();
 
     useEffect(() => {
         if (sessionStatus === "unauthenticated") {
@@ -152,7 +152,7 @@ const Entry = () => {
         else setChildEntries(newEntries);
     }
 
-    if (sessionStatus === "loading" || isLoading || isUpdating || isChildUpdating) { return <Loading/> }
+    if (sessionStatus === "loading" || isLoading) { return <Loading/> }
     if (!sessionData) return;
     return <>
         <Head><title>Задача</title></Head>

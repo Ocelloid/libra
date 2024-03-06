@@ -15,7 +15,7 @@ const Write = () => {
     const [entryTitle,   setEntryTitle]   = useState("");
     const [weightRating, setWeightRating] = useState(50);
 
-    const { mutate: createEntry, status, isLoading } = api.weightedEntry.createEntry.useMutation({
+    const { mutate: createEntry, isLoading } = api.weightedEntry.createEntry.useMutation({
         onSuccess(data) {
             void replace(`/entries/${data.id}`)
         }
