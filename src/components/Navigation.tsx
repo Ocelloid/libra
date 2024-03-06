@@ -1,4 +1,4 @@
-import Link from "next/Link";
+import Link from "next/link";
 import {XMarkIcon} from "@heroicons/react/24/solid";
 import {ScaleIcon} from "@heroicons/react/24/outline";
 import {useState} from "react";
