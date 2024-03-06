@@ -10,6 +10,8 @@ import { BackwardIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { Button, Slider } from "@nextui-org/react";
 import type { Entry } from "~/server/api/routers/weightedentry";
 import FlipMove from "react-flip-move";
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 import Card from "~/components/Card";
 
 moment.locale('ru')
@@ -50,7 +52,7 @@ const Entry = () => {
         {   
             enabled: entryId !== undefined,
             onSuccess: (data: Entry[]) => {
-                setChildEntries(data);
+                setChildEntries(data.sort((a,b) => b.weightRating - a.weightRating));
             }
         }
     );
@@ -167,7 +169,7 @@ const Entry = () => {
                                     className="font-montserrat mx-auto rounded-sm border border-slate-800 bg-gray-800 p-5 tracking-wide w-full"/>          
                                 <textarea 
                                     cols={30} 
-                                    rows={3} 
+                                    rows={20} 
                                     required
                                     value={entryContent}
                                     onChange={e => setEntryContent(e.target.value)}
@@ -223,7 +225,7 @@ const Entry = () => {
                                     className="font-montserrat mx-auto rounded-sm border border-slate-800 bg-gray-800 p-5 tracking-wide w-full"/>
                                 <textarea 
                                     cols={30} 
-                                    rows={3} 
+                                    rows={20} 
                                     required
                                     value={childContent}
                                     onChange={e => setChildContent(e.target.value)}
@@ -261,7 +263,7 @@ const Entry = () => {
                                       className="gap-0"/>  
                                 <button 
                                     type="submit"
-                                    className="font-montserrat mx-auto whitespace-pre-line rounded-sm bg-gradient-to-br from-gray-700 to-gray-800 py-3 text-xl font-bold text-gray-50 w-full">
+                                    className="font-montserrat mx-auto whitespace-pre-line rounded-sm bg-gradient-to-br from-gray-700 to-gray-800 py-3 text-xl font-bold text-gray-50 w-full mb-10">
                                     Добавить подзадачу
                                 </button>
                             </form>
@@ -286,15 +288,12 @@ const Entry = () => {
                         <input 
                             disabled
                             value={entryTitle}
-                            className="font-montserrat mx-auto rounded-sm border border-slate-800 bg-gray-800 p-5 tracking-wide w-full"/>            
-                        <textarea 
-                            cols={30} 
-                            rows={3} 
-                            disabled
-                            value={entryContent}
-                            placeholder="Опиши свои мысли" 
-                            className="font-montserrat mx-auto rounded-sm border border-slate-800 bg-gray-800 p-5 tracking-wide w-full">
-                        </textarea>
+                            className="font-montserrat mx-auto rounded-sm border border-slate-800 bg-gray-800 p-5 tracking-wide w-full"/>                                       
+                        <ReactMarkdown 
+                            remarkPlugins={[remarkGfm]}
+                            className={"font-montserrat mx-auto rounded-sm border border-slate-800 bg-gray-800 p-5 tracking-wide w-full"}>
+                            {entryContent}
+                        </ReactMarkdown>
                         <Slider 
                             isDisabled 
                             size="sm"
