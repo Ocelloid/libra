@@ -7,7 +7,8 @@ export interface Entry {
     userId: string,
     parentId: string,
     dateCreated: Date,
-    weightRating: number
+    weightRating: number,
+    childEntries?: Entry[]
 }
 
 export const weightedEntryRouter = createTRPCRouter({
@@ -119,8 +120,7 @@ export const weightedEntryRouter = createTRPCRouter({
             const {db, session} = ctx;
             const data = await db.weightedEntry.findMany({
                 where: {
-                    userId: session.user.id,
-                    parentId: ""
+                    userId: session.user.id
                 },
                 orderBy: {
                     dateCreated: "desc",

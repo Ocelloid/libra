@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import Loading from "~/components/Loading";
 import { api } from "~/utils/api";
 
-const Write =() => {
+const Write = () => {
     const { status: sessionStatus } = useSession();
     const { data: sessionData } = useSession();
     const { replace } = useRouter();

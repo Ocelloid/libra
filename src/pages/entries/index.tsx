@@ -30,7 +30,10 @@ const Entries = () => {
         {
             enabled: sessionStatus === "authenticated",
             onSuccess: (data: Entry[]) => {
-                setEntries(data.sort((a,b) => b.weightRating - a.weightRating));
+                setEntries(data.map((val: Entry) => {
+                    val.childEntries = data.filter((childEntry: Entry) => childEntry.parentId === val.id);
+                    return val;
+                }).filter(v => !v.parentId).sort((a,b) => b.weightRating - a.weightRating));
             }
         }
     );

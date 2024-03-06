@@ -16,7 +16,7 @@ const Navigation = () => {
                     {isOpen ? <XMarkIcon width={30}/> : <ScaleIcon width={30}/>}
                 </div>
             </div>
-            <ul className={`flex flex-col gap-8 md:flex-row text-neutral-100 font-montserrat md:items-center md:justify-end md:gap-20 ${!isOpen && "hidden md:flex"}`}>
+            <ul className={`flex flex-col gap-8 md:flex-row text-neutral-100 font-montserrat items-center md:justify-end md:gap-20 ${!isOpen && "hidden md:flex"}`}>
                 <Link href="/entries">Список</Link>
                 <Link href="/write">Добавить</Link>
                 <button className="w-min" onClick={() => void signOut()}>Выйти</button>

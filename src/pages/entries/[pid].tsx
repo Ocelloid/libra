@@ -139,8 +139,8 @@ const Entry = () => {
             {isEditing ? <section className="sec-container">
                 {
                     entryData !== null && (
-                        <div className="mx-auto flex w-1/2 flex-col gap-5 max-w-md">
-                            <div className="flex flex-row items-center justify-between max-w-md">
+                        <div className="mx-auto flex md:w-3/4 lg:w-2/3 xl:w-1/2 2xl:w-3/7 flex-col gap-5">
+                            <div className="flex flex-row items-center justify-between">
                                 <button className="rounded-sm bg-gradient-to-br from-gray-700 to-gray-800 p-2" onClick={() => setIsEditing(false)}>
                                     <BackwardIcon width={25} className="text-gray-50"/>
                                 </button>
@@ -151,7 +151,7 @@ const Entry = () => {
                                     <TrashIcon width={25} className="text-gray-50"/>
                                 </button>
                             </div>         
-                            <form className="flex w-full flex-col justify-center gap-5 max-w-md" onSubmit={e => handleFormSubmit(e)}>                
+                            <form className="flex w-full flex-col justify-center gap-5" onSubmit={e => handleFormSubmit(e)}>                
                                 <textarea 
                                     cols={30} 
                                     rows={3} 
@@ -159,7 +159,7 @@ const Entry = () => {
                                     value={entryContent}
                                     onChange={value => setEntryContent(value.target.value)}
                                     placeholder="Опиши свои мысли" 
-                                    className="font-montserrat max-w-md mx-auto rounded-sm border border-slate-800 bg-gray-800 p-5 tracking-wide w-full">
+                                    className="font-montserrat mx-auto rounded-sm border border-slate-800 bg-gray-800 p-5 tracking-wide w-full">
                                 </textarea>
                                 <Slider 
                                     size="sm"
@@ -189,19 +189,19 @@ const Entry = () => {
                                           100
                                         </Button>
                                       }
-                                      className="gap-0 max-w-md"/>
+                                      className="gap-0"/>
                                 <button 
                                     type="submit" 
-                                    className="font-montserrat mx-auto max-w-md whitespace-pre-line rounded-sm bg-gradient-to-br from-gray-700 to-gray-800 py-3 text-xl font-bold text-gray-50 md:w-full">
+                                    className="font-montserrat mx-auto whitespace-pre-line rounded-sm bg-gradient-to-br from-gray-700 to-gray-800 py-3 text-xl font-bold text-gray-50 w-full">
                                     Обновить
                                 </button>
                             </form>
-                            <div className="flex flex-row items-center justify-between max-w-md pt-10">
+                            <div className="flex flex-row items-center justify-between pt-10">
                                 <h1 className="font-montserrat text-3xl font-extrabold text-gray-50">
                                     Новая подзадача
                                 </h1>
                             </div> 
-                            <form className="flex w-full flex-col justify-center gap-5 max-w-md" onSubmit={e => handleNewChild(e)}>   
+                            <form className="flex w-full flex-col justify-center gap-5" onSubmit={e => handleNewChild(e)}>   
                                 <textarea 
                                     cols={30} 
                                     rows={3} 
@@ -209,7 +209,7 @@ const Entry = () => {
                                     value={childContent}
                                     onChange={value => setChildContent(value.target.value)}
                                     placeholder="Новая подзадача" 
-                                    className="font-montserrat max-w-md mx-auto rounded-sm border border-slate-800 bg-gray-800 p-5 tracking-wide w-full">
+                                    className="font-montserrat mx-auto rounded-sm border border-slate-800 bg-gray-800 p-5 tracking-wide w-full">
                                 </textarea>
                                 <Slider 
                                     size="sm"
@@ -239,10 +239,10 @@ const Entry = () => {
                                           100
                                         </Button>
                                       }
-                                      className="gap-0 max-w-md"/>  
+                                      className="gap-0"/>  
                                 <button 
                                     type="submit"
-                                    className="font-montserrat mx-auto max-w-md whitespace-pre-line rounded-sm bg-gradient-to-br from-gray-700 to-gray-800 py-3 text-xl font-bold text-gray-50 md:w-full">
+                                    className="font-montserrat mx-auto whitespace-pre-line rounded-sm bg-gradient-to-br from-gray-700 to-gray-800 py-3 text-xl font-bold text-gray-50 w-full">
                                     Добавить подзадачу
                                 </button>
                             </form>
@@ -252,8 +252,8 @@ const Entry = () => {
             </section>
             : <section className="sec-container">
                 {entryData !== null && (
-                    <div className="mx-auto flex md:w-1/2 flex-col gap-5 max-w-md w-full max-w-full">
-                        <div className="flex flex-row items-center justify-between max-w-md">
+                    <div className="mx-auto flex md:w-3/4 lg:w-2/3 xl:w-1/2 2xl:w-3/7 flex-col gap-5">
+                        <div className="flex flex-row items-center justify-between">
                             <button className="rounded-sm bg-gradient-to-br from-gray-700 to-gray-800 p-2" onClick={() => loadParent()}>
                                 <BackwardIcon width={25} className="text-gray-50"/>
                             </button>
@@ -270,7 +270,7 @@ const Entry = () => {
                             disabled
                             value={entryContent}
                             placeholder="Опиши свои мысли" 
-                            className="font-montserrat max-w-md mx-auto rounded-sm border border-slate-800 bg-gray-800 p-5 tracking-wide w-full">
+                            className="font-montserrat mx-auto rounded-sm border border-slate-800 bg-gray-800 p-5 tracking-wide w-full">
                         </textarea>
                         <Slider 
                             isDisabled 
@@ -281,7 +281,7 @@ const Entry = () => {
                             label="Вес"
                             showTooltip={true}
                             value={weightRating}
-                            className="gap-0 max-w-md"/>
+                            className="gap-0"/>
                     </div>
                 )}
                 <FlipMove>
