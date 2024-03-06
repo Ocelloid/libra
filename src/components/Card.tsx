@@ -22,7 +22,6 @@ const Card: React.FC<{
         const { mutate: updateEntryMutation } = api.weightedEntry.updateEntryWeight.useMutation();
 
         const handleChildEntriesWeightChange = (entryId: string, weight: number, commit: boolean | undefined) => {
-            console.log(entryId, weight, commit)
             if (isNaN(Number(weight))) return;
 
             const newEntries: WeightedEntry[] = childEntries.map((childEntry) => {

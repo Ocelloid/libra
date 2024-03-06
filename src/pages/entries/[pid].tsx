@@ -17,10 +17,10 @@ import Card from "~/components/Card";
 moment.locale('ru')
 
 const Entry = () => {
-    const { status: sessionStatus } = useSession();
-    const { data: sessionData } = useSession();
-    const { replace, query } = useRouter();
-    console.log(query);
+    const { status: sessionStatus }       = useSession();
+    const { data: sessionData }           = useSession();
+    const { replace, query }              = useRouter();
+    
     const entryId: string = (Array.isArray(query.pid) ? query.pid[0] : query.pid) ?? "";
 
     const {isOpen, onOpen, onOpenChange}  = useDisclosure();
@@ -45,9 +45,9 @@ const Entry = () => {
         {   
             enabled: (entryId !== undefined && entryId!== ""),
             onSuccess: (data: WeightedEntry) => {
-                setEntryTitle(data.title);
                 setParentId(data.parentId);
                 setEntryUserId(data.userId);
+                setEntryTitle(data.title);
                 setEntryContent(data.content);
                 setWeightRating(data.weightRating);
             }
