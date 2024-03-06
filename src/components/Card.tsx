@@ -48,7 +48,7 @@ const Card: React.FC<{
         }
 
         return(
-            <div className={`truncate ${isChild ? "ml-5 pl-3" : "mx-10 px-3 md:mx-auto md:w-3/4 lg:w-2/3 xl:w-1/2 2xl:w-3/7"} my-5 flex flex-col rounded-md bg-slate-800 pt-5`}>
+            <div className={`truncate ${isChild ? "ml-5 pl-3 pt-5" : "mx-10 px-3 md:mx-auto md:w-3/4 lg:w-2/3 xl:w-1/2 2xl:w-3/7 my-5 py-5"} flex flex-col rounded-md bg-slate-800`}>
                 <Link 
                     href={`/entries/${entry.id}`} 
                     className="">
