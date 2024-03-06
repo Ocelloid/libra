@@ -1,6 +1,15 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure} from "~/server/api/trpc";
 
+export interface Entry {
+    id: string,
+    content: string,
+    userId: string,
+    parentId: string,
+    dateCreated: Date,
+    weightRating: number
+}
+
 export const weightedEntryRouter = createTRPCRouter({
 
     createEntry: protectedProcedure
@@ -14,6 +23,25 @@ export const weightedEntryRouter = createTRPCRouter({
                     content: content,
                     weightRating: weight,
                     userId: session.user.id
+                },
+                select: {id: true}
+            });
+
+            return newWeightedEntry;
+        }),
+
+    createChild: protectedProcedure
+        .input(z.object({ content: z.string(), weight: z.number(), parentId: z.string() }))
+        .mutation(async ({ ctx, input }) => {
+            const {db, session} = ctx;
+            const {content, weight, parentId} = input;
+
+            const newWeightedEntry = await db.weightedEntry.create({
+                data: {
+                    content: content,
+                    weightRating: weight,
+                    userId: session.user.id,
+                    parentId: parentId
                 },
                 select: {id: true}
             });
@@ -91,7 +119,25 @@ export const weightedEntryRouter = createTRPCRouter({
             const {db, session} = ctx;
             const data = await db.weightedEntry.findMany({
                 where: {
-                    userId: session.user.id
+                    userId: session.user.id,
+                    parentId: ""
+                },
+                orderBy: {
+                    dateCreated: "desc",
+                },
+            });
+            return data;
+        }),
+
+    getChildEntriesById: protectedProcedure
+        .input(z.object({parentId: z.string()}))
+        .query(async ({ ctx, input }) => {
+            const {db, session} = ctx;
+            const {parentId} = input;
+            const data = await db.weightedEntry.findMany({
+                where: {
+                    userId: session.user.id,
+                    parentId: parentId
                 },
                 orderBy: {
                     dateCreated: "desc",

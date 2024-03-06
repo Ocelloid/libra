@@ -16,8 +16,9 @@ datasource db {
 
 model WeightedEntry {
     id           String     @id @default(cuid())
-    content      String 
+    content      String     
     userId       String
+    parentId     String     @default("")
     user         User       @relation(fields:[userId], references: [id], onDelete: Cascade)
     dateCreated  DateTime   @default(now())
     weightRating Int? 
