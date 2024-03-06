@@ -17,15 +17,15 @@ const Write = () => {
 
     const { mutate: createEntry, status, isLoading } = api.weightedEntry.createEntry.useMutation({
         onSuccess(data) {
-            replace(`/entries/${data.id}`)
+            void replace(`/entries/${data.id}`)
         }
     });
 
     useEffect(() => {
         if (sessionStatus === "unauthenticated") {
-            replace("/");
+            void replace("/");
         }
-    }, [sessionStatus]);
+    }, [replace, sessionStatus]);
 
     if (sessionStatus === "loading" || isLoading) { return <Loading/> }
 

@@ -10,28 +10,28 @@ import 'moment/locale/ru';
 moment.locale('ru')
 import FlipMove from 'react-flip-move';
 import Card from "~/components/Card";
-import type { Entry } from "~/server/api/routers/weightedentry";
+import { type WeightedEntry } from "~/server/api/routers/weightedentry";
 
 const Entries = () => {
     const { status: sessionStatus } = useSession();
     const { data: sessionData } = useSession();
     const { replace } = useRouter();    
-    const [entries, setEntries] = useState<Entry[]>([]);
+    const [entries, setEntries] = useState<WeightedEntry[]>([]);
 
     useEffect(() => {
         if (sessionStatus === "unauthenticated") {
-            replace("/")
+            void replace("/")
         }
-    }, [sessionStatus]);
+    }, [replace, sessionStatus]);
 
 
     const {data: entriesData, status, isLoading} = api.weightedEntry.getAllEntries.useQuery(
         undefined, 
         {
             enabled: sessionStatus === "authenticated",
-            onSuccess: (data: Entry[]) => {
-                setEntries(data.map((val: Entry) => {
-                    val.childEntries = data.filter((childEntry: Entry) => childEntry.parentId === val.id);
+            onSuccess: (data: WeightedEntry[]) => {
+                setEntries(data.map((val: WeightedEntry) => {
+                    val.childEntries = data.filter((childEntry: WeightedEntry) => childEntry.parentId === val.id);
                     return val;
                 }).filter(v => !v.parentId).sort((a,b) => b.weightRating - a.weightRating));
             }
@@ -43,7 +43,7 @@ const Entries = () => {
     const handleWeightChange = (entryId: string, weight: number, commit: boolean | undefined) => {
         if (isNaN(Number(weight))) return;
 
-        const newEntries: Entry[] = entries.map((entry) => {
+        const newEntries: WeightedEntry[] = entries.map((entry) => {
             if (entry.id === entryId) {
                 return {
                     ...entry,
@@ -77,7 +77,7 @@ const Entries = () => {
                 {entries?.length === 0 
                     ? <NoEntries/> 
                     : <FlipMove>
-                        {entries?.map((entry: Entry) => (
+                        {entries?.map((entry: WeightedEntry) => (
                             <div key={entry.id}>
                                 <Card entry={entry} handleWeightChange={handleWeightChange}/>
                             </div>

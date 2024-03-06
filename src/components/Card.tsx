@@ -2,20 +2,20 @@ import { Button, Slider } from "@nextui-org/react";
 import Link from "next/link";
 import moment from "moment";
 import 'moment/locale/ru';
-import type { Entry } from "~/server/api/routers/weightedentry";
+import { type WeightedEntry } from "~/server/api/routers/weightedentry";
 import FlipMove from "react-flip-move";
 import { api } from "~/utils/api";
 import { useState } from "react";
 moment.locale('ru')
 
 const Card: React.FC<{
-        entry: Entry, 
+        entry: WeightedEntry, 
         handleWeightChange: (id: string, weight: number, commit?: boolean | undefined) => void,
         isChild?: boolean
     }> = ({entry, handleWeightChange, isChild}) => {
-        const [childEntries, setChildEntries] = useState<Entry[]>(
+        const [childEntries, setChildEntries] = useState<WeightedEntry[]>(
             entry.childEntries 
-                ? entry.childEntries.sort((a,b) => b.weightRating - a.weightRating)
+                ? entry.childEntries.sort((a: WeightedEntry, b: WeightedEntry) => b.weightRating - a.weightRating)
                 : []);
 
         const { mutate: updateEntryMutation, statusWeight, isLoadingWeight } = api.weightedEntry.updateEntryWeight.useMutation();
@@ -23,9 +23,8 @@ const Card: React.FC<{
         const handleChildEntriesWeightChange = (entryId: string, weight: number, commit: boolean | undefined) => {
             console.log(entryId, weight, commit)
             if (isNaN(Number(weight))) return;
-            //if (!entry.childEntries || entry.childEntries?.length === 0) return;
 
-            const newEntries: Entry[] = childEntries.map((childEntry) => {
+            const newEntries: WeightedEntry[] = childEntries.map((childEntry) => {
                 if (childEntry.id === entryId) {
                     return {
                         ...childEntry,
@@ -43,8 +42,6 @@ const Card: React.FC<{
                 updateEntryMutation({id: entryId, weight: weight});
             }
             else setChildEntries(newEntries);
-            
-            //handleWeightChange(entry.id, entry.weight, true);
         }
 
         return(
@@ -89,7 +86,7 @@ const Card: React.FC<{
                     }
                     className="gap-0"/>
                 <FlipMove>
-                    {childEntries.map((childEntry: Entry) => (
+                    {childEntries.map((childEntry: WeightedEntry) => (
                         <div key={childEntry.id}>
                             <Card entry={childEntry} handleWeightChange={handleChildEntriesWeightChange} isChild/>
                         </div>

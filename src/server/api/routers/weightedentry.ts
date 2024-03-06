@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure} from "~/server/api/trpc";
 
-export interface Entry {
+export interface WeightedEntry {
     id: string,
     title: string,
     content: string,
@@ -9,7 +9,7 @@ export interface Entry {
     parentId: string,
     dateCreated: Date,
     weightRating: number,
-    childEntries?: Entry[]
+    childEntries?: WeightedEntry[] // this should be illegal
 }
 
 export const weightedEntryRouter = createTRPCRouter({
