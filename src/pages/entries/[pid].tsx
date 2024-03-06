@@ -25,20 +25,20 @@ const Entry = () => {
 
     const {isOpen, onOpen, onOpenChange}  = useDisclosure();
 
-    const [parentId,     setParentId]     = useState<string>("");
-    const [entryUserId,  setEntryUserId]  = useState<string>("");
-    const [entryTitle,   setEntryTitle]   = useState<string>("");
+    const [parentId,     setParentId    ] = useState<string>("");
+    const [entryUserId,  setEntryUserId ] = useState<string>("");
+    const [entryTitle,   setEntryTitle  ] = useState<string>("");
     const [entryContent, setEntryContent] = useState<string>("");
     const [weightRating, setWeightRating] = useState<number>(50);
 
-    const [childTitle,   setChildTitle]   = useState<string>("");
+    const [childTitle,   setChildTitle  ] = useState<string>("");
     const [childContent, setChildContent] = useState<string>("");
-    const [childRating,  setChildRating]  = useState<number>(50);
+    const [childRating,  setChildRating ] = useState<number>(50);
 
     const [childEntries, setChildEntries] = useState<WeightedEntry[]>([]);
 
-    const [isEditing,    setIsEditing]    = useState<boolean>(false);
-    const [isAdding,     setIsAdding]     = useState<boolean>(false);
+    const [isEditing,    setIsEditing   ] = useState<boolean>(false);
+    const [isAdding,     setIsAdding    ] = useState<boolean>(false);
 
     const {data: entryData, isLoading} = api.weightedEntry.getEntryById.useQuery(
         {id: entryId}, 
