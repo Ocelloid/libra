@@ -75,10 +75,18 @@ export const weightedEntryRouter = createTRPCRouter({
             const {db, session} = ctx;
             const {id} = input;
 
-            await db.weightedEntry.delete({
+            await db.weightedEntry.deleteMany({
                 where: {
-                    userId: session.user.id,
-                    id: id
+                    OR:[
+                        {
+                            userId: session.user.id,
+                            id: id
+                        },
+                        {
+                            userId: session.user.id,
+                            parentId: id
+                        },
+                    ]
                 }
             })
         }),

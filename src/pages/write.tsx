@@ -29,10 +29,17 @@ const Write = () => {
 
     if (sessionStatus === "loading" || isLoading) { return <Loading/> }
 
-    const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    const handleFormSubmit = (e?: React.FormEvent<HTMLFormElement>) => {
+        e?.preventDefault();
         createEntry({ content: entryContent, title: entryTitle, weight: Number(weightRating) });
     };
+
+    const onCtrlEnterPress = (e: React.KeyboardEvent) => {
+        if (e.ctrlKey && e.key === "Enter") {
+            e.preventDefault();
+            if (!!entryTitle && !!entryContent) handleFormSubmit();
+        };
+    }
 
     if (!sessionData) return;
     return (
@@ -49,6 +56,7 @@ const Write = () => {
                             <input 
                                 required
                                 value={entryTitle}
+                                onKeyDown={e => onCtrlEnterPress(e)}
                                 onChange={e => setEntryTitle(e.target.value)}
                                 placeholder="Название новой задачи" 
                                 className="font-montserrat mx-auto rounded-sm border border-slate-800 bg-gray-800 p-5 tracking-wide w-full"/>
@@ -57,6 +65,7 @@ const Write = () => {
                                 rows={10} 
                                 required
                                 value={entryContent}
+                                onKeyDown={e => onCtrlEnterPress(e)}
                                 onChange={value => setEntryContent(value.target.value)}
                                 placeholder="Опиши свои мысли" 
                                 className="font-montserrat mx-auto rounded-sm border border-slate-800 bg-gray-800 p-5 tracking-wide w-full">
