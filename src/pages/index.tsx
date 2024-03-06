@@ -21,7 +21,7 @@ export default function Home() {
           </h1>
           <AuthShowcase/>
           <button 
-            onClick={sessionData? () => void signOut(sessionData) : () => void signIn()}
+            onClick={sessionData? () => void signOut() : () => void signIn()}
             className="mx-auto rounded-sm bg-gradient-to-br from-indigo-500 to-indigo-600 px-20 py-2 font-montserrat text-2xl font-bold text-neutral-50 shadow-sm"
           >
             {sessionData ? "Выйти" : "Войти"}
