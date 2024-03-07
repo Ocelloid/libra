@@ -159,10 +159,7 @@ const Entry = () => {
     if (!sessionData) return;
     return <>
         <Head><title>Задача</title></Head>
-
-        <div className="h-screen w-screen g-cover bg-center flex flex-col overflow-x-hidden overflow-y-auto" 
-            style={{backgroundImage: `url(/background.png)`}}
-        >
+        <div className="h-screen w-screen g-cover bg-center flex flex-col overflow-x-hidden overflow-y-auto">
             <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
                 <ModalContent className="font-montserrat">
                 {(onClose) => (
@@ -202,7 +199,9 @@ const Entry = () => {
                                 <PlusCircleIcon width={25} className="text-neutral-100"/>
                             </button>
                         </div>         
-                        <form className="flex w-full flex-col justify-center gap-5" onSubmit={e => handleFormSubmit(e)} onKeyPress={(e) => { e.key === 'Enter' && e.preventDefault(); }}>
+                        <form className="flex w-full flex-col justify-center gap-5" 
+                            onSubmit={e => handleFormSubmit(e)} 
+                            onKeyPress={(e) => { e.key === 'Enter' && e.preventDefault(); }}>
                             <input 
                                 required
                                 value={entryTitle}
@@ -297,7 +296,9 @@ const Entry = () => {
                             Новая подзадача
                         </h1>
                     </div> 
-                    <form className="flex w-full flex-col justify-center gap-5" onSubmit={e => handleNewChild(e)} onKeyPress={(e) => { e.key === 'Enter' && e.preventDefault(); }}>   
+                    <form className="flex w-full flex-col justify-center gap-5" 
+                        onSubmit={e => handleNewChild(e)} 
+                        onKeyPress={(e) => { e.key === 'Enter' && e.preventDefault(); }}>   
                         <input 
                             required
                             value={childTitle}

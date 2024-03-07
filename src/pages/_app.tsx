@@ -29,7 +29,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <NextUIProvider>
-      <div className={`${poppinsFont.variable} ${montserratFont.variable}`}>
+      <div className={`${poppinsFont.variable} ${montserratFont.variable}`} style={{backgroundImage: `url(/background.png)`, backgroundSize: '100% 100%'}}>
           <SessionProvider session={session}>
             <Component {...pageProps} />
             <Navigation/> 

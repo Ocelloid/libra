@@ -66,17 +66,12 @@ const Entries = () => {
     if (sessionStatus === "loading" || isLoading ) { return <Loading/> }
     if (!sessionData) return;
     return (<>
-        <Head>
-            <title>Список</title>
-        </Head>
-
-        <div className="h-screen w-screen g-cover bg-center flex flex-col overflow-x-hidden overflow-y-auto" 
-            style={{backgroundImage: `url(/background.png)`}}
-        >
+        <Head><title>Список</title></Head>
+        <div className="h-screen w-screen g-cover bg-center flex flex-col overflow-x-hidden overflow-y-auto">
             <section className="sec-container">
                 {entries?.length === 0 
                     ? <NoEntries/> 
-                    : <FlipMove>
+                    : <FlipMove className="-mt-5">
                         {entries?.map((entry: WeightedEntry) => (
                             <div key={entry.id}>
                                 <Card entry={entry} handleWeightChange={handleWeightChange}/>

@@ -48,12 +48,12 @@ const Write = () => {
             <Head>
                 <title>Новая задача</title>
             </Head>
-            <div className="h-screen w-screen g-cover bg-center flex flex-col overflow-x-hidden overflow-y-auto" 
-                style={{backgroundImage: `url(/background.png)`}}
-            >
+            <div className="h-screen w-screen g-cover bg-center flex flex-col overflow-x-hidden overflow-y-auto">
                 <section className="sec-container">
                     <div className="mx-auto flex md:w-3/4 lg:w-2/3 xl:w-1/2 2xl:w-3/7 flex-col gap-5">
-                        <form className="flex w-full flex-col justify-center gap-5" onSubmit={e => handleFormSubmit(e)} onKeyPress={(e) => { e.key === 'Enter' && e.preventDefault(); }}>
+                        <form className="flex w-full flex-col justify-center gap-5" 
+                            onSubmit={e => handleFormSubmit(e)} 
+                            onKeyPress={(e) => { e.key === 'Enter' && e.preventDefault(); }}>
                             <input 
                                 required
                                 value={entryTitle}
