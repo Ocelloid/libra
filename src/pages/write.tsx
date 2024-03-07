@@ -101,7 +101,7 @@ const Write = () => {
                                 className="mx-auto"/>
                             <button 
                                 type="submit" 
-                                className="font-montserrat mx-auto w-full whitespace-pre-line rounded-sm bg-gradient-to-br from-gray-700 to-gray-800 py-3 text-xl font-bold text-gray-50">
+                                className="font-montserrat mx-auto w-full whitespace-pre-line rounded-sm bg-gradient-to-br from-gray-700 to-gray-800 py-3 text-xl font-bold text-neutral-100">
                                 Отправить
                             </button>
                         </form>

@@ -186,17 +186,17 @@ const Entry = () => {
                 {entryData !== null && (
                     <div className="mx-auto flex md:w-3/4 lg:w-2/3 xl:w-1/2 2xl:w-3/7 flex-col gap-5">
                         <div className="flex flex-row items-center justify-between">
-                            <button className="rounded-sm bg-gradient-to-br from-gray-700 to-gray-800 p-2 mr-auto" onClick={() => setIsEditing(false)}>
-                                <ArrowUpLeftIcon width={25} className="text-gray-50"/>
+                            <button className="rounded-sm bg-gradient-to-br from-gray-700 to-gray-800 p-2 mr-auto hover:from-gray-700" onClick={() => setIsEditing(false)}>
+                                <ArrowUpLeftIcon width={25} className="text-neutral-100"/>
                             </button>
-                            <h1 className="font-montserrat text-3xl font-extrabold text-gray-50">
+                            <h1 className="font-montserrat text-3xl font-extrabold text-neutral-100">
                                 {moment(entryData?.dateCreated).format("D MMMM YYYY HH:mm")}
                             </h1>
-                            <button className="rounded-sm bg-gradient-to-br from-red-500 to-red-800 p-2 ml-auto mr-2" onClick={() => onOpen()}>
-                                <TrashIcon width={25} className="text-gray-50"/>
+                            <button className="rounded-sm bg-gradient-to-br from-red-500 to-red-800 p-2 ml-auto mr-2 hover:from-red-500" onClick={() => onOpen()}>
+                                <TrashIcon width={25} className="text-neutral-100"/>
                             </button>
-                            <button className="rounded-sm bg-gradient-to-br from-gray-500 to-gray-800 p-2" onClick={() => {setIsAdding(true); setIsEditing(false)}}>
-                                <PlusCircleIcon width={25} className="text-gray-50"/>
+                            <button className="rounded-sm bg-gradient-to-br from-gray-500 to-gray-800 p-2 hover:from-gray-500" onClick={() => {setIsAdding(true); setIsEditing(false)}}>
+                                <PlusCircleIcon width={25} className="text-neutral-100"/>
                             </button>
                         </div>         
                         <form className="flex w-full flex-col justify-center gap-5" onSubmit={e => handleFormSubmit(e)}>
@@ -248,7 +248,7 @@ const Entry = () => {
                                     className="gap-0"/>
                             <button 
                                 type="submit" 
-                                className="font-montserrat mx-auto whitespace-pre-line rounded-sm bg-gradient-to-br from-gray-700 to-gray-800 py-3 text-xl font-bold text-gray-50 w-full">
+                                className="font-montserrat mx-auto whitespace-pre-line rounded-sm bg-gradient-to-br from-gray-700 to-gray-800 py-3 text-xl font-bold text-neutral-100 w-full">
                                 Обновить
                             </button>
                         </form>                            
@@ -258,10 +258,10 @@ const Entry = () => {
             : isAdding ? <section className="sec-container">
                 <div className="mx-auto flex md:w-3/4 lg:w-2/3 xl:w-1/2 2xl:w-3/7 flex-col gap-5">
                     <div className="flex flex-row items-center justify-between">
-                        <button className="rounded-sm bg-gradient-to-br from-gray-700 to-gray-800 p-2" onClick={() => setIsAdding(false)}>
-                            <ArrowUpLeftIcon width={25} className="text-gray-50"/>
+                        <button className="rounded-sm bg-gradient-to-br from-gray-700 to-gray-800 p-2 hover:from-gray-700" onClick={() => setIsAdding(false)}>
+                            <ArrowUpLeftIcon width={25} className="text-neutral-100"/>
                         </button>
-                        <h1 className="font-montserrat text-3xl font-extrabold text-gray-50 mx-auto">
+                        <h1 className="font-montserrat text-3xl font-extrabold text-neutral-100 mx-auto">
                             Новая подзадача
                         </h1>
                     </div> 
@@ -312,7 +312,7 @@ const Entry = () => {
                             className="gap-0"/>  
                         <button 
                             type="submit"
-                            className="font-montserrat mx-auto whitespace-pre-line rounded-sm bg-gradient-to-br from-gray-700 to-gray-800 py-3 text-xl font-bold text-gray-50 w-full mb-10">
+                            className="font-montserrat mx-auto whitespace-pre-line rounded-sm bg-gradient-to-br from-gray-700 to-gray-800 py-3 text-xl font-bold text-neutral-100 w-full mb-10">
                             Добавить подзадачу
                         </button>
                     </form>
@@ -322,17 +322,17 @@ const Entry = () => {
                 {entryData !== null && (
                     <div className="mx-auto flex md:w-3/4 lg:w-2/3 xl:w-1/2 2xl:w-3/7 flex-col gap-5" onDoubleClick={() => setIsEditing(true)}>
                         <div className="flex flex-row items-center justify-between">
-                            <button className="rounded-sm bg-gradient-to-br from-gray-700 to-gray-800 p-2 mr-auto" onClick={() => loadParent()}>
-                                <ArrowUpLeftIcon width={25} className="text-gray-50"/>
+                            <button className="rounded-sm bg-gradient-to-br from-gray-700 to-gray-800 p-2 mr-auto hover:from-gray-700" onClick={() => loadParent()}>
+                                <ArrowUpLeftIcon width={25} className="text-neutral-100"/>
                             </button>
-                            <h1 className="font-montserrat text-3xl font-extrabold text-gray-50">
+                            <h1 className="font-montserrat text-3xl font-extrabold text-neutral-100">
                                 {moment(entryData?.dateCreated).format("D MMMM YYYY HH:mm")}
                             </h1>
-                            <button className="rounded-sm bg-gradient-to-br from-gray-700 to-gray-800 p-2 ml-auto mr-2" onClick={() => setIsEditing(true)}>
-                                <PencilIcon width={25} className="text-gray-50"/>
+                            <button className="rounded-sm bg-gradient-to-br from-gray-700 to-gray-800 p-2 ml-auto mr-2 hover:from-gray-700" onClick={() => setIsEditing(true)}>
+                                <PencilIcon width={25} className="text-neutral-100"/>
                             </button>                            
-                            <button className="rounded-sm bg-gradient-to-br from-gray-500 to-gray-800 p-2" onClick={() => setIsAdding(true)}>
-                                <PlusCircleIcon width={25} className="text-gray-50"/>
+                            <button className="rounded-sm bg-gradient-to-br from-gray-700 to-gray-800 p-2 hover:from-gray-700" onClick={() => setIsAdding(true)}>
+                                <PlusCircleIcon width={25} className="text-neutral-100"/>
                             </button>
                         </div>          
                         <ReactMarkdown 

@@ -12,10 +12,20 @@ html, body {
 
 div::-webkit-scrollbar {
     display: none;
-  }
-  
-  /* Hide scrollbar for IE, Edge and Firefox */
+} 
+
+/* Hide scrollbar for IE, Edge and Firefox */
 div {
--ms-overflow-style: none;  /* IE and Edge */
-scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.child-entry:last-of-type > .child-entry-card {
+    border-bottom-left-radius: 0.375rem;
+    border-bottom-right-radius: 0.375rem;
+}
+
+.child-entry:first-of-type > .child-entry-card {
+    border-top-left-radius: 0.375rem;
+    border-top-right-radius: 0.375rem;
 }
