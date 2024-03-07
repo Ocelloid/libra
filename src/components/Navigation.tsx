@@ -1,9 +1,17 @@
 import Link from "next/link";
-import {XMarkIcon} from "@heroicons/react/24/solid";
-import {ScaleIcon} from "@heroicons/react/24/outline";
+//import {PlusCircleIcon, XMarkIcon} from "@heroicons/react/24/solid";
+import {PlusCircleIcon, XMarkIcon, ScaleIcon} from "@heroicons/react/24/outline";
 import {useState} from "react";
 import {signOut, useSession} from "next-auth/react";
-import { Tooltip } from "@nextui-org/react";
+import {
+    Tooltip,
+    Dropdown,
+    DropdownTrigger,
+    DropdownMenu,
+    DropdownSection,
+    DropdownItem,
+    Button
+  } from "@nextui-org/react";
 
 const Navigation = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -17,17 +25,30 @@ const Navigation = () => {
                     {isOpen ? <XMarkIcon width={30}/> : <ScaleIcon width={30}/>}
                 </div>
             </div>
-            <ul className={`flex flex-col gap-8 md:flex-row text-neutral-100 font-montserrat items-center md:justify-end md:gap-20 ${!isOpen && "hidden md:flex"}`}>
-                <Link href="/entries" className="hover:text-gray-300">Список</Link>
-                <Link href="/write" className="hover:text-gray-300">Добавить</Link>
-                    <Tooltip
-                        className="text-tiny text-default-500 rounded-md"
-                        content={`Вы зашли как ${sessionData.user?.name}`}
-                        placement="bottom">
-                    <button className="w-min hover:text-gray-300" onClick={() => void signOut()}>
-                        Выйти
-                    </button>
-                </Tooltip>
+            <ul className={`flex flex-col gap-8 md:flex-row text-neutral-100 font-montserrat items-center md:justify-end md:gap-10 ${!isOpen && "hidden md:flex"}`}>                          
+                    {/* <Button variant="bordered" className="rounded-full border-none p-0">
+                        <Link href="/write" className="p-2"><PlusCircleIcon width={25} className="text-neutral-100"/></Link> 
+                    </Button> */}
+                    <Button variant="bordered" className="w-min hover:text-gray-300 border-none font-montserrat text-medium p-0">
+                        <Link href="/entries" className="p-2">Список</Link>
+                    </Button>       
+                    <Button variant="bordered" className="w-min hover:text-gray-300 border-none font-montserrat text-medium p-0">
+                        <Link href="/write" className="p-2">Добавить</Link>   
+                    </Button>       
+                <Dropdown>
+                    <DropdownTrigger>
+                        <Button variant="bordered" className="w-min hover:text-gray-300 border-none font-montserrat text-medium">
+                            {sessionData.user?.name}
+                        </Button>
+                    </DropdownTrigger>
+                    <DropdownMenu aria-label="Static Actions">
+                        <DropdownItem key="settings" href="/settings">Настройки</DropdownItem>
+                        <DropdownItem key="teams" href="/teams">Команды</DropdownItem>
+                        <DropdownItem key="exit" className="text-danger" color="danger" onClick={() => void signOut()}>
+                            Выйти
+                        </DropdownItem>
+                    </DropdownMenu>
+                </Dropdown>
             </ul>
         </nav>
     )
