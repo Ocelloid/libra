@@ -23,13 +23,19 @@ const Navigation = () => {
                     {isOpen ? <XMarkIcon width={30}/> : <ScaleIcon width={30}/>}
                 </div>
             </div>
-            <ul className={`flex flex-col gap-8 md:flex-row text-neutral-100 font-montserrat items-center md:justify-end md:gap-10 ${!isOpen && "hidden md:flex"}`}>
-                    <Button variant="bordered" className="w-min hover:text-gray-300 border-none font-montserrat text-medium p-0">
-                        <Link href="/entries" className="p-2">Список</Link>
-                    </Button>       
-                    <Button variant="bordered" className="w-min hover:text-gray-300 border-none font-montserrat text-medium p-0">
-                        <Link href="/write" className="p-2">Добавить</Link>   
-                    </Button>       
+            <ul className={`flex flex-col gap-8 md:flex-row text-neutral-100 font-montserrat items-right mr-auto md:justify-end md:gap-10 ${!isOpen && "hidden md:flex"}`}>
+                <Button variant="bordered" className="w-min hover:text-gray-300 border-none font-montserrat text-medium py-0 px-2">
+                    <Link href="/entries" className="p-2">Личные задачи</Link>
+                </Button>       
+                <Button variant="bordered" className="w-min hover:text-gray-300 border-none font-montserrat text-medium py-0 px-2">
+                    <Link href="/teams" className="p-2">Команды</Link>
+                </Button>    
+                <Button variant="bordered" className="w-min hover:text-gray-300 border-none font-montserrat text-medium py-0 px-2 md:hidden">
+                    <Link href="/settings" className="p-2">Настройки</Link>
+                </Button>    
+                <Button variant="bordered" className="w-min text-red-500 border-none font-montserrat text-medium py-0 px-4 md:hidden" onClick={() => void signOut()}>
+                    Выйти
+                </Button>  
                 <Dropdown>
                     <DropdownTrigger>                        
                         <User
@@ -37,10 +43,10 @@ const Navigation = () => {
                             avatarProps={{
                                 isBordered: true,
                                 size: "sm",
-                                className: "w-8 h-8 md:w-10",
+                                className: "w-10 h-8",
                                 src: sessionData.user.image ?? "",
                             }}
-                            className="hover:text-gray-300 border-none font-montserrat text-medium"
+                            className="hover:text-gray-300 border-none font-montserrat text-medium hidden md:flex"
                             name={sessionData.user.name}/>
                     </DropdownTrigger>
                     <DropdownMenu aria-label="Действия с аккаунтом" 
@@ -49,7 +55,6 @@ const Navigation = () => {
                             base: ["bg-transparent", "hover:bg-transparent", "text-neutral-100"]
                         }}>
                         <DropdownItem key="settings" href="/settings">Настройки</DropdownItem>
-                        <DropdownItem key="teams"    href="/teams">Команды</DropdownItem>
                         <DropdownItem key="exit"     className="text-danger" color="danger" onClick={() => void signOut()}>
                             Выйти
                         </DropdownItem>

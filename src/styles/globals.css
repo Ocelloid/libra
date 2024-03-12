@@ -7,7 +7,7 @@ html, body {
 }
 
 .sec-container {
-    @apply mt-24 flex flex-col justify-center gap-10 
+    @apply mt-24 flex flex-col justify-center gap-2 
 }
 
 div::-webkit-scrollbar {

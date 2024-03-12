@@ -27,7 +27,7 @@ export const weightedEntryRouter = createTRPCRouter({
                     weightRating: weight,
                     userId: session.user.id
                 },
-                select: {id: true}
+                select: {id: true, userId: true, dateCreated: true}
             });
 
             return newWeightedEntry;

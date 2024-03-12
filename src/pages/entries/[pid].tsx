@@ -42,7 +42,7 @@ const Entry = () => {
     const [isEditing,    setIsEditing   ] = useState<boolean>(false);
     const [isAdding,     setIsAdding    ] = useState<boolean>(false);
 
-    const {data: entryData, isLoading} = api.weightedEntry.getEntryById.useQuery(
+    const {data: entryData, isLoading} = api.weightedEntry.getEntryById.useQuery( 
         {id: entryId}, 
         {   
             enabled: (entryId !== undefined && entryId!== ""),
@@ -200,8 +200,7 @@ const Entry = () => {
                             </button>
                         </div>         
                         <form className="flex w-full flex-col justify-center gap-5" 
-                            onSubmit={e => handleFormSubmit(e)} 
-                            onKeyPress={(e) => { e.key === 'Enter' && e.preventDefault(); }}>
+                            onSubmit={e => handleFormSubmit(e)}>
                             <input 
                                 required
                                 value={entryTitle}
@@ -211,7 +210,7 @@ const Entry = () => {
                                 className="font-montserrat mx-auto rounded-sm border border-slate-800 bg-gray-800 p-5 tracking-wide w-full"/>          
                             <textarea 
                                 cols={30} 
-                                rows={20} 
+                                rows={10} 
                                 required
                                 value={entryContent}
                                 onKeyDown={e => onCtrlEnterPress(e)}
@@ -219,70 +218,70 @@ const Entry = () => {
                                 placeholder="Опиши свои мысли" 
                                 className="font-montserrat mx-auto rounded-sm border border-slate-800 bg-gray-800 p-5 tracking-wide w-full">
                             </textarea>
-                            <Slider 
-                                size="sm"
-                                step={1} 
-                                minValue={0} 
-                                maxValue={100}                               
-                                label="Вес:&nbsp;"
-                                showTooltip={true}
-                                value={weightRating}
-                                onChange={value => setWeightRating(Number(value))}
-                                startContent={
-                                    <Button
-                                        isIconOnly
-                                        radius="full"
-                                        variant="light"
-                                        onPress={() => setWeightRating(0)}>
-                                        0
-                                    </Button>
-                                }
-                                endContent={
-                                    <Button
-                                        isIconOnly
-                                        radius="full"
-                                        variant="light"
-                                        onPress={() => setWeightRating(100)}>
-                                        100
-                                    </Button>
-                                }                       
-                                renderValue={(...props) => (
-                                    <output {...props}>
-                                        <Tooltip
-                                            className="text-tiny text-default-500 rounded-md"
-                                            content="Нажми Enter чтобы применить"
-                                            placement="left">
-                                        <input
-                                            className="px-1 py-0.5 w-10 my-1 text-center text-medium font-montserrat text-gray-500 font-medium bg-slate-800 outline-none transition-colors rounded-small border-medium border-transparent hover:border-primary focus:border-primary bg-transparent"
-                                            type="text"
-                                            aria-label="Вес"
-                                            value={editingValue}
-                                            onChange={(e) => {
-                                                const v = e.target.value;
-                                                setEditingValue(v);
-                                            }}
-                                            onKeyDown={(e) => {
-                                                if (e.key === "Enter" && !isNaN(Number(editingValue))) {
-                                                    setWeightRating(Number(editingValue));
-                                                }
-                                            }}/>
-                                        </Tooltip>
-                                    </output>
-                                )}                                 
-                                color="foreground"
-                                classNames={{
-                                    label: "ml-auto text-medium text-gray-500 font-montserrat",
-                                    value: "text-medium text-gray-500 font-montserrat",
-                                    filler: "bg-neutral-100 hover:bg-gray-300",
-                                    thumb: "bg-neutral-100 hover:bg-gray-300"
-                                }}
-                                className="gap-0"/>
                             <button 
                                 type="submit" 
                                 className="font-montserrat mx-auto whitespace-pre-line rounded-sm bg-gradient-to-br from-gray-700 to-gray-800 py-3 text-xl font-bold text-neutral-100 w-full">
                                 Обновить
                             </button>
-                        </form>                            
+                        </form>      
+                        <Slider 
+                            size="sm"
+                            step={1} 
+                            minValue={0} 
+                            maxValue={100}                               
+                            label="Вес:&nbsp;"
+                            showTooltip={true}
+                            value={weightRating}
+                            onChange={value => setWeightRating(Number(value))}
+                            startContent={
+                                <Button
+                                    isIconOnly
+                                    radius="full"
+                                    variant="light"
+                                    onPress={() => setWeightRating(0)}>
+                                    0
+                                </Button>
+                            }
+                            endContent={
+                                <Button
+                                    isIconOnly
+                                    radius="full"
+                                    variant="light"
+                                    onPress={() => setWeightRating(100)}>
+                                    100
+                                </Button>
+                            }                       
+                            renderValue={(...props) => (
+                                <output {...props}>
+                                    <Tooltip
+                                        className="text-tiny text-default-500 rounded-md"
+                                        content="Нажми Enter чтобы применить"
+                                        placement="left">
+                                    <input
+                                        className="px-1 py-0.5 w-10 my-1 text-center text-medium font-montserrat text-gray-500 font-medium bg-slate-800 outline-none transition-colors rounded-small border-medium border-transparent hover:border-primary focus:border-primary bg-transparent"
+                                        type="text"
+                                        aria-label="Вес"
+                                        value={editingValue}
+                                        onChange={(e) => {
+                                            const v = e.target.value;
+                                            setEditingValue(v);
+                                        }}
+                                        onKeyDown={(e) => {
+                                            if (e.key === "Enter" && !isNaN(Number(editingValue))) {
+                                                setWeightRating(Number(editingValue));
+                                            }
+                                        }}/>
+                                    </Tooltip>
+                                </output>
+                            )}                                 
+                            color="foreground"
+                            classNames={{
+                                label: "ml-auto text-medium text-gray-500 font-montserrat",
+                                value: "text-medium text-gray-500 font-montserrat",
+                                filler: "bg-neutral-100 hover:bg-gray-300",
+                                thumb: "bg-neutral-100 hover:bg-gray-300"
+                            }}
+                            className="gap-0"/>                      
                     </div>
                 )}
             </section>
@@ -297,8 +296,7 @@ const Entry = () => {
                         </h1>
                     </div> 
                     <form className="flex w-full flex-col justify-center gap-5" 
-                        onSubmit={e => handleNewChild(e)} 
-                        onKeyPress={(e) => { e.key === 'Enter' && e.preventDefault(); }}>   
+                        onSubmit={e => handleNewChild(e)}>   
                         <input 
                             required
                             value={childTitle}
@@ -308,7 +306,7 @@ const Entry = () => {
                             className="font-montserrat mx-auto rounded-sm border border-slate-800 bg-gray-800 p-5 tracking-wide w-full"/>
                         <textarea 
                             cols={30} 
-                            rows={20} 
+                            rows={10} 
                             required
                             value={childContent}
                             onChange={e => setChildContent(e.target.value)}
@@ -316,70 +314,70 @@ const Entry = () => {
                             placeholder="Новая подзадача" 
                             className="font-montserrat mx-auto rounded-sm border border-slate-800 bg-gray-800 p-5 tracking-wide w-full">
                         </textarea>
-                        <Slider 
-                            size="sm"
-                            step={1} 
-                            minValue={0} 
-                            maxValue={100}                                  
-                            label="Вес:&nbsp;"
-                            showTooltip={true}
-                            value={childRating}
-                            onChange={value => setChildRating(Number(value))}
-                            startContent={
-                                <Button
-                                    isIconOnly
-                                    radius="full"
-                                    variant="light"
-                                    onPress={() => setChildRating(0)}>
-                                    0
-                                </Button>
-                            }
-                            endContent={
-                                <Button
-                                    isIconOnly
-                                    radius="full"
-                                    variant="light"
-                                    onPress={() => setChildRating(100)}>
-                                    100
-                                </Button>
-                            }         
-                            renderValue={(...props) => (
-                                <output {...props}>
-                                    <Tooltip
-                                        className="text-tiny text-default-500 rounded-md"
-                                        content="Нажми Enter чтобы применить"
-                                        placement="left">
-                                    <input
-                                        className="px-1 py-0.5 w-10 my-1 text-center text-medium font-montserrat text-gray-500 font-medium bg-slate-800 outline-none transition-colors rounded-small border-medium border-transparent hover:border-primary focus:border-primary bg-transparent"
-                                        type="text"
-                                        aria-label="Вес"
-                                        value={inputValue}
-                                        onChange={(e) => {
-                                            const v = e.target.value;
-                                            setInputValue(v);
-                                        }}
-                                        onKeyDown={(e) => {
-                                            if (e.key === "Enter" && !isNaN(Number(inputValue))) {
-                                                setChildRating(Number(inputValue));
-                                            }
-                                        }}/>
-                                    </Tooltip>
-                                </output>
-                            )}    
-                            color="foreground"
-                            classNames={{
-                                label: "ml-auto text-medium text-gray-500 font-montserrat",
-                                value: "text-medium text-gray-500 font-montserrat",
-                                filler: "bg-neutral-100 hover:bg-gray-300",
-                                thumb: "bg-neutral-100 hover:bg-gray-300"
-                            }}
-                            className="gap-0"/>  
                         <button 
                             type="submit"
                             className="font-montserrat mx-auto whitespace-pre-line rounded-sm bg-gradient-to-br from-gray-700 to-gray-800 py-3 text-xl font-bold text-neutral-100 w-full mb-10">
                             Добавить подзадачу
                         </button>
                     </form>
+                    <Slider 
+                        size="sm"
+                        step={1} 
+                        minValue={0} 
+                        maxValue={100}                                  
+                        label="Вес:&nbsp;"
+                        showTooltip={true}
+                        value={childRating}
+                        onChange={value => setChildRating(Number(value))}
+                        startContent={
+                            <Button
+                                isIconOnly
+                                radius="full"
+                                variant="light"
+                                onPress={() => setChildRating(0)}>
+                                0
+                            </Button>
+                        }
+                        endContent={
+                            <Button
+                                isIconOnly
+                                radius="full"
+                                variant="light"
+                                onPress={() => setChildRating(100)}>
+                                100
+                            </Button>
+                        }         
+                        renderValue={(...props) => (
+                            <output {...props}>
+                                <Tooltip
+                                    className="text-tiny text-default-500 rounded-md"
+                                    content="Нажми Enter чтобы применить"
+                                    placement="left">
+                                <input
+                                    className="px-1 py-0.5 w-10 my-1 text-center text-medium font-montserrat text-gray-500 font-medium bg-slate-800 outline-none transition-colors rounded-small border-medium border-transparent hover:border-primary focus:border-primary bg-transparent"
+                                    type="text"
+                                    aria-label="Вес"
+                                    value={inputValue}
+                                    onChange={(e) => {
+                                        const v = e.target.value;
+                                        setInputValue(v);
+                                    }}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter" && !isNaN(Number(inputValue))) {
+                                            setChildRating(Number(inputValue));
+                                        }
+                                    }}/>
+                                </Tooltip>
+                            </output>
+                        )}    
+                        color="foreground"
+                        classNames={{
+                            label: "ml-auto text-medium text-gray-500 font-montserrat",
+                            value: "text-medium text-gray-500 font-montserrat",
+                            filler: "bg-neutral-100 hover:bg-gray-300",
+                            thumb: "bg-neutral-100 hover:bg-gray-300"
+                        }}
+                        className="gap-0"/>  
                 </div>
             </section> 
             : <section className="sec-container">
