@@ -3,31 +3,31 @@ import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader} from 
 import moment from "moment";
 import 'moment/locale/ru';
 import { useState } from "react";
-import { type WeightedEntry } from "~/server/api/routers/weightedentry";
+import { type WeightedTask } from "~/server/api/routers/WeightedTask";
 import { api } from "~/utils/api";
 moment.locale('ru')
 
-const ViewCardModal: React.FC<{
-        entry: WeightedEntry, 
+const ViewTaskModal: React.FC<{
+        task: WeightedTask, 
         isOpen: boolean | undefined,
         onOpenChange: () => void,
         onDeleteOpen: () => void,
-}> = ({entry, isOpen, onOpenChange, onDeleteOpen}) => {  
+}> = ({task, isOpen, onOpenChange, onDeleteOpen}) => {  
     const [isEditing,    setIsEditing   ] = useState<boolean>(false); 
-    const [entryTitle,   setEntryTitle  ] = useState<string>(entry.title);
-    const [entryContent, setEntryContent] = useState<string>(entry.content);
+    const [taskTitle,   setEntryTitle  ] = useState<string>(task.title);
+    const [taskContent, setEntryContent] = useState<string>(task.content);
     
-    const { mutate: updateMutation } = api.weightedEntry.updateEntry.useMutation();
+    const { mutate: updateMutation } = api.WeightedTask.updateTask.useMutation();
 
     const handleFormSubmit = (e?: React.FormEvent<HTMLFormElement>) => {
         e?.preventDefault();
-        updateMutation({ id: entry.id, content: entryContent, title: entryTitle, weight: entry.weightRating });
+        updateMutation({ id: task.id, content: taskContent, title: taskTitle, weight: task.weightRating });
     };
 
     const onCtrlEnterPress = (e: React.KeyboardEvent) => {
         if (e.ctrlKey && e.key === "Enter") {
             e.preventDefault();
-            if (entryTitle && !!entryContent) handleFormSubmit();
+            if (!!taskTitle && !!taskContent) handleFormSubmit();
         };
     } 
 
@@ -49,7 +49,7 @@ const ViewCardModal: React.FC<{
                         <ModalHeader className="flex flex-col gap-1">
                             <div className="flex flex-row items-center justify-between">
                                 <h3 className="font-montserrat text-neutral-100">
-                                    {moment(entry.dateCreated).format("D MMMM YYYY HH:mm")}
+                                    {moment(task.dateCreated).format("D MMMM YYYY HH:mm")}
                                 </h3>
                             </div>         
                         </ModalHeader>
@@ -58,7 +58,7 @@ const ViewCardModal: React.FC<{
                                 <div className="flex flex-row gap-2">
                                     <input 
                                         disabled={true}
-                                        value={entryTitle}
+                                        value={taskTitle}
                                         className="font-montserrat mx-auto rounded-sm border-slate-800 bg-gray-800 bg-opacity-60 px-2 tracking-wide w-full"/>                                                   
                                     <button className="rounded-sm bg-gradient-to-br from-gray-700 to-gray-800 p-2 ml-auto hover:from-gray-700" 
                                         tabIndex={10003}
@@ -70,7 +70,7 @@ const ViewCardModal: React.FC<{
                                     cols={30} 
                                     rows={10} 
                                     disabled
-                                    value={entryContent}
+                                    value={taskContent}
                                     className="font-montserrat mx-auto rounded-sm border-slate-800 bg-gray-800 bg-opacity-60 p-2 tracking-wide w-full mb-4">
                                 </textarea>
                             </div>}
@@ -79,7 +79,7 @@ const ViewCardModal: React.FC<{
                                 <div className="flex flex-row gap-2">
                                     <input 
                                         required
-                                        value={entryTitle}
+                                        value={taskTitle}
                                         tabIndex={10001}
                                         onKeyDown={e => onCtrlEnterPress(e)}
                                         onChange={e => setEntryTitle(e.target.value)}
@@ -96,7 +96,7 @@ const ViewCardModal: React.FC<{
                                     rows={10} 
                                     required
                                     tabIndex={10002}
-                                    value={entryContent}
+                                    value={taskContent}
                                     onKeyDown={e => onCtrlEnterPress(e)}
                                     onChange={e => setEntryContent(e.target.value)}
                                     placeholder="Опиши свои мысли" 
@@ -119,4 +119,4 @@ const ViewCardModal: React.FC<{
     )
 }
 
-export default ViewCardModal;
+export default ViewTaskModal;

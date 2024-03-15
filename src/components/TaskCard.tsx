@@ -1,26 +1,27 @@
 import { Button, Slider, Tooltip, useDisclosure } from "@nextui-org/react";
 import moment from "moment";
 import 'moment/locale/ru';
-import { type WeightedEntry } from "~/server/api/routers/weightedentry";
+import { type WeightedTask } from "~/server/api/routers/WeightedTask";
 import FlipMove from "react-flip-move";
 import { api } from "~/utils/api";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeftIcon, ArrowRightIcon, PlusIcon } from "@heroicons/react/24/solid";
-import DeleteCardModal from "./modals/deleteCard";
-import ViewCardModal from "./modals/viewCard";
+import DeleteTaskModal from "./modals/deleteTask";
+import ViewTaskModal from "./modals/viewTask";
 moment.locale('ru')
 
-const Card: React.FC<{
-    entry: WeightedEntry, 
+const TaskCard: React.FC<{
+    task: WeightedTask, 
     handleWeightChange: (id: string, weight: number, commit?: boolean | undefined) => void,
     onDelete: (id: string) => void,
+    fullWidth?: boolean,
     tabIndex: number,
     isChild?: boolean,
     className?: string,
-}> = ({entry, handleWeightChange, onDelete, tabIndex, isChild, className}) => {
-    const [childEntries, setChildEntries] = useState<WeightedEntry[]>(
-        entry.childEntries 
-            ? entry.childEntries.sort((a: WeightedEntry, b: WeightedEntry) => b.weightRating - a.weightRating)
+}> = ({task, handleWeightChange, onDelete, fullWidth, tabIndex, isChild, className}) => {
+    const [childTasks, setchildTasks] = useState<WeightedTask[]>(
+        task.childTasks 
+            ? task.childTasks.sort((a: WeightedTask, b: WeightedTask) => b.weightRating - a.weightRating)
             : []
     );
 
@@ -33,47 +34,48 @@ const Card: React.FC<{
         onOpen: onEditOpen,   
         onOpenChange: onEditOpenChange  } = useDisclosure();
 
-    const [entryUserId                  ] = useState<string>(entry.userId);
-    const [inputValue,   setInputValue  ] = useState<string>(entry.weightRating.toString());
+    const [taskUserId                   ] = useState<string>(task.userId);
+    const [inputValue,   setInputValue  ] = useState<string>(task.weightRating.toString());
 
     const [childTitle,   setChildTitle  ] = useState<string>("");
     const [childContent, setChildContent] = useState<string>("");
     const [childRating,  setChildRating ] = useState<number>(50);
 
-    const { mutate: updateEntryMutation } = api.weightedEntry.updateEntryWeight.useMutation();
+    const { mutate: updateTaskMutation } = api.WeightedTask.updateTaskWeight.useMutation();
 
-    const { mutate: childMutation } = api.weightedEntry.createChild.useMutation({
+    const { mutate: childMutation } = api.WeightedTask.createTask.useMutation({
         onSuccess(newEntry) {
-            const newChildEntries: WeightedEntry[] = [
-                ...childEntries, 
+            const newchildTasks: WeightedTask[] = [
+                ...childTasks, 
                 {
                     id: newEntry.id,
-                    parentId: entry.id,
+                    parentId: task.id,
+                    teamId: task.teamId,
                     title: childTitle,
                     content: childContent,
                     weightRating: childRating,
-                    userId: entryUserId,
+                    userId: taskUserId,
                     dateCreated: new Date()
                 }
             ];
-            setChildEntries(newChildEntries);
+            setchildTasks(newchildTasks);
             setChildTitle("");
             setChildContent("");
             setChildRating(50);
         }
     });
 
-    const handleChildDelete = (entryId: string) => {
-        const newEntries: WeightedEntry[] = entry.childEntries
-            ? entry.childEntries.filter((childEntry) => childEntry.id !== entryId)
+    const handleChildDelete = (taskId: string) => {
+        const newEntries: WeightedTask[] = task.childTasks
+            ? task.childTasks.filter((childEntry) => childEntry.id !== taskId)
             : [];
-        setChildEntries(newEntries);
+        setchildTasks(newEntries);
     }
 
-    const handleChildEntriesWeightChange = (entryId: string, weight: number, commit: boolean | undefined) => {
+    const handlechildTasksWeightChange = (taskId: string, weight: number, commit: boolean | undefined) => {
         if (isNaN(Number(weight))) return;
-        const newEntries: WeightedEntry[] = childEntries.map((childEntry) => {
-            if (childEntry.id === entryId) {
+        const newEntries: WeightedTask[] = childTasks.map((childEntry) => {
+            if (childEntry.id === taskId) {
                 return {
                     ...childEntry,
                     weightRating: weight
@@ -83,42 +85,46 @@ const Card: React.FC<{
         });
 
         if (commit) {
-            setChildEntries(
+            setchildTasks(
                 newEntries
                     .sort((a,b) => b.weightRating - a.weightRating)
             );
-            updateEntryMutation({id: entryId, weight: weight});
+            updateTaskMutation({id: taskId, weight: weight});
         }
-        else setChildEntries(newEntries);
+        else setchildTasks(newEntries);
     }
 
     const handleNewChild = (e?: React.FormEvent<HTMLFormElement>) => {
         e?.preventDefault();
-        childMutation({content: childContent, title: childTitle, weight: childRating, parentId: entry.id});
+        childMutation({content: childContent, title: childTitle, weight: childRating, parentId: task.id, teamId: task.teamId});
     }
 
     const onCtrlEnterPress = (e: React.KeyboardEvent) => {
         if (e.ctrlKey && e.key === "Enter") {
             e.preventDefault();
-            if (childTitle && !!childContent) handleNewChild();
+            if (!!childTitle && !!childContent) handleNewChild();
         };
     } 
+
+    useEffect(() => {
+        setInputValue(task.weightRating.toString());
+    }, [setInputValue, task.weightRating])
 
     return(
         <div className={
             `truncate ${isChild 
                 ? "ml-2 pl-2 pt-0" 
-                : "mx-10 p-3 pl-2 pb-0 pr-0 md:mx-auto md:w-3/4 lg:w-2/3 xl:w-1/2 2xl:w-3/7 my-5 rounded-md"
+                : `p-3 pl-2 pb-0 pr-0 ${fullWidth ? "" : "mx-10 md:mx-auto md:w-3/4 lg:w-2/3 xl:w-1/2 2xl:w-3/7"} mb-5 rounded-md`
             } flex flex-col bg-slate-800 bg-opacity-30 ${className}`}>
-            <DeleteCardModal entry={entry} isOpen={isDeleteOpen} onOpenChange={onDeleteOpenChange} onDelete={onDelete}/>
-            <ViewCardModal entry={entry} isOpen={isEditOpen} onOpenChange={onEditOpenChange} onDeleteOpen={onDeleteOpen}/>
+            <DeleteTaskModal task={task} isOpen={isDeleteOpen} onOpenChange={onDeleteOpenChange} onDelete={onDelete}/>
+            <ViewTaskModal task={task} isOpen={isEditOpen} onOpenChange={onEditOpenChange} onDeleteOpen={onDeleteOpen}/>
             <div className={`flex flex-row ${isChild ? '' : 'mr-3'}`}>
                 <Button 
                     variant="bordered" 
                     className="w-full hover:text-gray-300 border-none font-montserrat text-medium p-0" 
                     onClick={onEditOpen}>
                     <p className="font-montserrat px-2 text-lg text-neutral-100 hover:text-gray-300 w-full text-left">
-                        {entry.title}
+                        {task.title}
                     </p>
                 </Button> 
             </div>
@@ -132,11 +138,11 @@ const Card: React.FC<{
                     value={Number(inputValue)}
                     color="foreground"
                     onChange={value => {
-                        handleWeightChange(entry.id.toString(), Number(value));
+                        handleWeightChange(task.id.toString(), Number(value));
                         setInputValue(value.toString());                    
                     }}
                     onChangeEnd={value => {
-                        handleWeightChange(entry.id.toString(), Number(value), true);
+                        handleWeightChange(task.id.toString(), Number(value), true);
                         setInputValue(value.toString()); 
                     }}
                     startContent={
@@ -145,7 +151,7 @@ const Card: React.FC<{
                             radius="full"
                             variant="light"
                             onPress={() => {
-                                handleWeightChange(entry.id.toString(), 0, true);
+                                handleWeightChange(task.id.toString(), 0, true);
                                 setInputValue("0");                    
                             }}>
                             <ArrowLeftIcon width={24} className="text-neutral-100"/>
@@ -157,7 +163,7 @@ const Card: React.FC<{
                             radius="full"
                             variant="light"
                             onPress={() => {
-                                handleWeightChange(entry.id.toString(), 100, true);
+                                handleWeightChange(task.id.toString(), 100, true);
                                 setInputValue("100");             
                             }}>
                             <ArrowRightIcon width={24} className="text-neutral-100"/>
@@ -187,7 +193,7 @@ const Card: React.FC<{
                             }}
                             onKeyDown={(e) => {
                                 if (e.key === "Enter" && !isNaN(Number(inputValue))) {
-                                    handleWeightChange(entry.id.toString(), Number(inputValue), true);
+                                    handleWeightChange(task.id.toString(), Number(inputValue), true);
                                 }
                             }}/>
                     </Tooltip>
@@ -232,11 +238,11 @@ const Card: React.FC<{
                 </textarea>
             </form>          
             <FlipMove>
-                {childEntries.map((childEntry: WeightedEntry, index) => (
+                {childTasks.map((childEntry: WeightedTask, index) => (
                     <div key={childEntry.id} className="child-entry">
-                        <Card 
-                            entry={childEntry}
-                            handleWeightChange={handleChildEntriesWeightChange} 
+                        <TaskCard 
+                            task={childEntry}
+                            handleWeightChange={handlechildTasksWeightChange} 
                             isChild 
                             tabIndex={tabIndex * 30 * (index + 1)}  
                             onDelete={handleChildDelete} 
@@ -248,4 +254,4 @@ const Card: React.FC<{
     )
 }
 
-export default Card;
+export default TaskCard;

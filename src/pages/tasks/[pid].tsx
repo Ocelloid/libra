@@ -8,11 +8,11 @@ import { api } from "~/utils/api";
 import 'moment/locale/ru';
 import { ArrowUpLeftIcon, PencilIcon, PlusCircleIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Slider, Tooltip, useDisclosure } from "@nextui-org/react";
-import { type WeightedEntry } from "~/server/api/routers/weightedentry";
+import { type WeightedTask } from "~/server/api/routers/WeightedTask";
 import FlipMove from "react-flip-move";
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import Card from "~/components/Card";
+import TaskCard from "~/components/TaskCard";
 
 moment.locale('ru')
 
@@ -37,16 +37,16 @@ const Entry = () => {
     const [childContent, setChildContent] = useState<string>("");
     const [childRating,  setChildRating ] = useState<number>(50);
 
-    const [childEntries, setChildEntries] = useState<WeightedEntry[]>([]);
+    const [childTasks, setchildTasks] = useState<WeightedTask[]>([]);
 
     const [isEditing,    setIsEditing   ] = useState<boolean>(false);
     const [isAdding,     setIsAdding    ] = useState<boolean>(false);
 
-    const {data: entryData, isLoading} = api.weightedEntry.getEntryById.useQuery( 
+    const {data: entryData, isLoading} = api.WeightedTask.getTaskById.useQuery( 
         {id: entryId}, 
         {   
             enabled: (entryId !== undefined && entryId!== ""),
-            onSuccess: (data: WeightedEntry) => {
+            onSuccess: (data: WeightedTask) => {
                 setParentId(data.parentId);
                 setEntryUserId(data.userId);
                 setEntryTitle(data.title);
@@ -57,32 +57,32 @@ const Entry = () => {
         }
     );
 
-    api.weightedEntry.getChildEntriesById.useQuery(
+    api.WeightedTask.getChildTasksById.useQuery(
         { parentId: entryId },
         {
             enabled: (entryId !== undefined && entryId !== ""),
-            onSuccess: (data: WeightedEntry[]) => {
-                setChildEntries(data.sort((a, b) => b.weightRating - a.weightRating));
+            onSuccess: (data: WeightedTask[]) => {
+                setchildTasks(data.sort((a, b) => b.weightRating - a.weightRating));
             }
         }
     );
 
-    const {mutate: deletionMutation} = api.weightedEntry.deleteEntry.useMutation({
+    const {mutate: deletionMutation} = api.WeightedTask.deleteTask.useMutation({
         onSuccess() {
             void replace('/entries')
         }
     });
 
-    const { mutate: updateMutation } = api.weightedEntry.updateEntry.useMutation({
+    const { mutate: updateMutation } = api.WeightedTask.updateTask.useMutation({
         onSuccess() {
             setIsEditing(false);
         }
     });
 
-    const { mutate: childMutation } = api.weightedEntry.createChild.useMutation({
+    const { mutate: childMutation } = api.WeightedTask.createTask.useMutation({
         onSuccess(newEntry) {
-            const newChildEntries: WeightedEntry[] = [
-                ...childEntries, 
+            const newchildTasks: WeightedTask[] = [
+                ...childTasks, 
                 {
                     id: newEntry.id,
                     parentId: entryId,
@@ -93,7 +93,7 @@ const Entry = () => {
                     dateCreated: new Date()
                 }
             ];
-            setChildEntries(newChildEntries);
+            setchildTasks(newchildTasks);
             setIsAdding(false);
             setChildTitle("");
             setChildContent("");
@@ -101,7 +101,7 @@ const Entry = () => {
         }
     });
 
-    const { mutate: updateEntryMutation } = api.weightedEntry.updateEntryWeight.useMutation();
+    const { mutate: updateTaskMutation } = api.WeightedTask.updateTaskWeight.useMutation();
 
     useEffect(() => {
         if (sessionStatus === "unauthenticated") {
@@ -135,7 +135,7 @@ const Entry = () => {
     const handleWeightChange = (entryId: string, weight: number, commit: boolean | undefined) => {
         if (isNaN(Number(weight))) return;
 
-        const newEntries: WeightedEntry[] = childEntries.map((entry) => {
+        const newEntries: WeightedTask[] = childTasks.map((entry) => {
             if (entry.id === entryId) {
                 return {
                     ...entry,
@@ -146,20 +146,24 @@ const Entry = () => {
         });
 
         if (commit) {
-            setChildEntries(
+            setchildTasks(
                 newEntries
                     .sort((a,b) => b.weightRating - a.weightRating)
             );
-            updateEntryMutation({id: entryId, weight: weight});
+            updateTaskMutation({id: entryId, weight: weight});
         }
-        else setChildEntries(newEntries);
+        else setchildTasks(newEntries);
+    }
+
+    const handleDelete = () => {
+        return null;
     }
 
     if (sessionStatus === "loading" || isLoading) { return <Loading/> }
     if (!sessionData) return;
     return <>
         <Head><title>Задача</title></Head>
-        <div className="h-screen w-screen g-cover bg-center flex flex-col overflow-x-hidden overflow-y-auto">
+        <div className="h-screen w-screen flex flex-col overflow-x-hidden overflow-y-auto">
             <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
                 <ModalContent className="font-montserrat">
                 {(onClose) => (
@@ -427,9 +431,13 @@ const Entry = () => {
                     </div>
                 )}
                 <FlipMove>
-                    {childEntries.map((childEntry: WeightedEntry) => (
+                    {childTasks.map((childEntry: WeightedTask, index) => (
                         <div key={childEntry.id}>
-                            <Card entry={childEntry} handleWeightChange={handleWeightChange}/>
+                            <TaskCard 
+                            task={childEntry} 
+                            handleWeightChange={handleWeightChange} 
+                            tabIndex={3 * (index + 1)} 
+                            onDelete={handleDelete}/>
                         </div>
                     ))}
                 </FlipMove>

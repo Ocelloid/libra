@@ -2,24 +2,24 @@ import {useSession} from "next-auth/react";
 import {useRouter} from "next/router";
 import { useEffect, useState } from "react";
 import Head from "next/head";
-import NoEntries from "~/components/NoEntries";
+import NoTasks from "~/components/NoTasks";
 import Loading from "~/components/Loading";
 import { api } from "~/utils/api";
 import moment from "moment";
 import 'moment/locale/ru';
 moment.locale('ru')
 import FlipMove from 'react-flip-move';
-import Card from "~/components/Card";
-import { type WeightedEntry } from "~/server/api/routers/weightedentry";
+import TaskCard from "~/components/TaskCard";
+import { type WeightedTask } from "~/server/api/routers/WeightedTask";
 import { PlusIcon } from "@heroicons/react/24/solid";
 
-const Entries = () => {
+const Tasks = () => {
     const { status: sessionStatus } = useSession();
     const { data: sessionData } = useSession();
     const { replace } = useRouter();    
-    const [entries,      setEntries     ] = useState<WeightedEntry[]>([]);
-    const [entryTitle,   setEntryTitle  ] = useState<string>("");
-    const [entryContent, setEntryContent] = useState<string>("");
+    const [tasks,       setTasks    ] = useState<WeightedTask[]>([]);
+    const [taskTitle,   setTaskTitle  ] = useState<string>("");
+    const [taskContent, setTaskContent] = useState<string>("");
 
     useEffect(() => {
         if (sessionStatus === "unauthenticated") {
@@ -27,92 +27,92 @@ const Entries = () => {
         }
     }, [replace, sessionStatus]);
 
-    const {isLoading} = api.weightedEntry.getAllEntries.useQuery(
+    const {isLoading} = api.WeightedTask.getAllTasks.useQuery(
         undefined, 
         {
             enabled: sessionStatus === "authenticated",
-            onSuccess: (data: WeightedEntry[]) => {
-                setEntries(data.map((val: WeightedEntry) => {
-                    val.childEntries = data.filter((childEntry: WeightedEntry) => childEntry.parentId === val.id);
+            onSuccess: (data: WeightedTask[]) => {
+                setTasks(data.map((val: WeightedTask) => {
+                    val.childTasks = data.filter((childTask: WeightedTask) => childTask.parentId === val.id);
                     return val;
                 }).filter(v => !v.parentId).sort((a,b) => b.weightRating - a.weightRating));
             }
         }
     );
 
-    const { mutate: updateEntryMutation } = api.weightedEntry.updateEntryWeight.useMutation();
+    const { mutate: updateTaskMutation } = api.WeightedTask.updateTaskWeight.useMutation();
 
-    const { mutate: createEntry } = api.weightedEntry.createEntry.useMutation({
+    const { mutate: createTask } = api.WeightedTask.createTask.useMutation({
         onSuccess(data) {
-            setEntries([...entries, {
+            setTasks([...tasks, {
                 id: data.id,
-                title: entryTitle,
+                title: taskTitle,
                 userId: data.userId,
                 parentId: '',
-                content: entryContent,
+                content: taskContent,
                 weightRating: 100,
                 dateCreated: data.dateCreated,
-                childEntries: []
+                childTasks: []
             }].sort((a,b) => b.weightRating - a.weightRating));    
-            setEntryTitle("");
-            setEntryContent("");        
+            setTaskTitle("");
+            setTaskContent("");        
         }
     });
 
-    const handleWeightChange = (entryId: string, weight: number, commit: boolean | undefined) => {
+    const handleWeightChange = (taskId: string, weight: number, commit: boolean | undefined) => {
         if (isNaN(Number(weight))) return;
 
-        const newEntries: WeightedEntry[] = entries.map((entry) => {
-            if (entry.id === entryId) {
+        const newTasks: WeightedTask[] = tasks.map((task) => {
+            if (task.id === taskId) {
                 return {
-                    ...entry,
+                    ...task,
                     weightRating: weight
                 }
             }
-            else return entry;
+            else return task;
         });
 
         if (commit) {
-            setEntries(
-                newEntries
+            setTasks(
+                newTasks
                     .sort((a,b) => b.weightRating - a.weightRating)
             );
-            updateEntryMutation({id: entryId, weight: weight});
+            updateTaskMutation({id: taskId, weight: weight});
         }
-        else setEntries(newEntries);
+        else setTasks(newTasks);
     }
 
-    const handleDelete = (entryId: string) => {
-        const newEntries: WeightedEntry[] = entries.filter((entry) => entry.id !== entryId);
-        setEntries(newEntries);
+    const handleDelete = (taskId: string) => {
+        const newTasks: WeightedTask[] = tasks.filter((task) => task.id !== taskId);
+        setTasks(newTasks);
     }
 
-    const handleNewEntry = (e?: React.FormEvent<HTMLFormElement>) => {
+    const handleNewTask = (e?: React.FormEvent<HTMLFormElement>) => {
         e?.preventDefault();
-        createEntry({ content: entryContent, title: entryTitle, weight: 100 });
+        createTask({ content: taskContent, title: taskTitle, weight: 100 });
     };
 
     const onCtrlEnterPress = (e: React.KeyboardEvent) => {
         if (e.ctrlKey && e.key === "Enter") {
             e.preventDefault();
-            if (entryTitle && !!entryContent) handleNewEntry();
+            if (!!taskTitle && !!taskContent) handleNewTask();
         };
     }
 
     if (sessionStatus === "loading" || isLoading ) { return <Loading/> }
     if (!sessionData) return;
     return (<>
-        <Head><title>Список</title></Head>
-        <div className="h-screen w-screen g-cover bg-center flex flex-col overflow-x-hidden overflow-y-auto">      
+        <Head><title>Личные задачи</title></Head>
+        <div className="h-screen w-screen flex flex-col overflow-x-hidden overflow-y-auto">      
             <section className="sec-container">
                 <form className={`flex flex-col justify-center gap-2 mx-10 md:mx-auto md:w-3/4 lg:w-2/3 xl:w-1/2 2xl:w-3/7 rounded-md pt-2`} 
-                    onSubmit={e => handleNewEntry(e)}>
+                    onSubmit={e => handleNewTask(e)}>
                     <div className="flex flex-row gap-2">
                         <input 
                             required
-                            value={entryTitle}
+                            value={taskTitle}
                             onKeyDown={e => onCtrlEnterPress(e)}
-                            onChange={e => setEntryTitle(e.target.value)}
+                            onChange={e => setTaskTitle(e.target.value)}
                             placeholder="Название новой задачи" 
                             tabIndex={1}
                             className="font-montserrat mx-auto rounded-sm border border-slate-800 bg-gray-800 py-1 px-3 tracking-wide w-full"/>  
@@ -128,24 +128,24 @@ const Entries = () => {
                         rows={3} 
                         required
                         tabIndex={2}
-                        value={entryContent}
+                        value={taskContent}
                         onKeyDown={e => onCtrlEnterPress(e)}
-                        onChange={e => setEntryContent(e.target.value)}
+                        onChange={e => setTaskContent(e.target.value)}
                         placeholder="Опиши свои мысли" 
                         className={`font-montserrat rounded-sm border border-slate-800 bg-gray-800 p-3 tracking-wide 
                         ${
-                            !entryTitle ? '-mt-24 -z-10 opacity-0' : 'mt-0 z-0 opacity-100'
+                            !taskTitle ? '-mt-24 -z-10 opacity-0' : 'mt-0 z-0 opacity-100'
                         }
                         transition-all ease-in-out delay-150 duration-300`}>
                     </textarea>
                 </form>    
-                {entries?.length === 0 
-                    ? <NoEntries/> 
-                    : <FlipMove className="-mt-4">
-                        {entries?.map((entry: WeightedEntry, index) => (
-                            <div key={entry.id}>
-                                <Card 
-                                    entry={entry}
+                {tasks?.length === 0 
+                    ? <NoTasks/> 
+                    : <FlipMove className="h-[80vh] overflow-y-auto pb-5 noscroll">
+                        {tasks?.map((task: WeightedTask, index) => (
+                            <div key={task.id}>
+                                <TaskCard 
+                                    task={task}
                                     handleWeightChange={handleWeightChange} 
                                     tabIndex={3 * (index + 1)} 
                                     onDelete={handleDelete}/>
@@ -158,4 +158,4 @@ const Entries = () => {
     </>);
 }
 
-export default Entries;
+export default Tasks;

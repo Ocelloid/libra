@@ -16,7 +16,7 @@ const Write = () => {
     const [weightRating, setWeightRating] = useState<number>(50);
     const [inputValue,   setInputValue  ] = useState<string>("50");
 
-    const { mutate: createEntry, isLoading } = api.weightedEntry.createEntry.useMutation({
+    const { mutate: createTask, isLoading } = api.WeightedTask.createTask.useMutation({
         onSuccess(data) {
             void replace(`/entries/${data.id}`)
         }
@@ -32,7 +32,7 @@ const Write = () => {
 
     const handleFormSubmit = (e?: React.FormEvent<HTMLFormElement>) => {
         e?.preventDefault();
-        createEntry({ content: entryContent, title: entryTitle, weight: Number(weightRating) });
+        createTask({ content: entryContent, title: entryTitle, weight: Number(weightRating) });
     };
 
     const onCtrlEnterPress = (e: React.KeyboardEvent) => {
@@ -48,7 +48,7 @@ const Write = () => {
             <Head>
                 <title>Новая задача</title>
             </Head>
-            <div className="h-screen w-screen g-cover bg-center flex flex-col overflow-x-hidden overflow-y-auto">
+            <div className="h-screen w-screen flex flex-col overflow-x-hidden overflow-y-auto">
                 <section className="sec-container">
                     <div className="mx-auto flex md:w-3/4 lg:w-2/3 xl:w-1/2 2xl:w-3/7 flex-col gap-5">
                         <form className="flex w-full flex-col justify-center gap-5" 
