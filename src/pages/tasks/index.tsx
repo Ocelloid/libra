@@ -12,20 +12,40 @@ import FlipMove from 'react-flip-move';
 import TaskCard from "~/components/TaskCard";
 import { type WeightedTask } from "~/server/api/routers/WeightedTask";
 import { PlusIcon } from "@heroicons/react/24/solid";
+import { useTranslation } from 'next-i18next';
+import { type GetServerSideProps } from "next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useTheme } from "next-themes";
 
 const Tasks = () => {
-    const { status: sessionStatus } = useSession();
-    const { data: sessionData } = useSession();
-    const { replace } = useRouter();    
-    const [tasks,       setTasks    ] = useState<WeightedTask[]>([]);
-    const [taskTitle,   setTaskTitle  ] = useState<string>("");
-    const [taskContent, setTaskContent] = useState<string>("");
-
+    const { status: sessionStatus               } = useSession();
+    const { data: sessionData                   } = useSession();
+    const { replace                             } = useRouter();    
+    const [ styleProp, setStyleProp             ] = useState({});
+    const { theme                               } = useTheme() 
+    const [ tasks,       setTasks               ] = useState<WeightedTask[]>([]);
+    const [ taskTitle,   setTaskTitle           ] = useState<string>("");
+    const [ taskContent, setTaskContent         ] = useState<string>("");
+    const [ buttonStyleProp, setButtonStyleProp ] = useState("");
+    const { t } = useTranslation(['ru', 'en']);
+    
     useEffect(() => {
         if (sessionStatus === "unauthenticated") {
             void replace("/")
         }
     }, [replace, sessionStatus]);
+  
+    useEffect(() => {
+      const newStyleProp = {backgroundImage:`url(/background-${theme}.png)`, backgroundSize: '100% 100%'};
+      setStyleProp(newStyleProp);
+    }, [theme]);
+
+    useEffect(() => {
+        const newStyleProp = (theme === "light") 
+            ? "from-gray-300 to-gray-400 hover:to-gray-700"
+            : "from-gray-700 to-gray-800 hover:from-gray-700";
+            setButtonStyleProp(newStyleProp);
+      }, [theme]);
 
     const {isLoading} = api.WeightedTask.getAllTasks.useQuery(
         undefined, 
@@ -102,8 +122,8 @@ const Tasks = () => {
     if (sessionStatus === "loading" || isLoading ) { return <Loading/> }
     if (!sessionData) return;
     return (<>
-        <Head><title>Личные задачи</title></Head>
-        <div className="h-screen w-screen flex flex-col overflow-x-hidden overflow-y-auto">      
+        <Head><title>{t('common:personal_tasks')}</title></Head>
+        <div className="h-screen w-screen flex flex-col overflow-x-hidden overflow-y-auto" style={styleProp}>      
             <section className="sec-container">
                 <form className={`flex flex-col justify-center gap-2 mx-10 md:mx-auto md:w-3/4 lg:w-2/3 xl:w-1/2 2xl:w-3/7 rounded-md pt-2`} 
                     onSubmit={e => handleNewTask(e)}>
@@ -113,13 +133,13 @@ const Tasks = () => {
                             value={taskTitle}
                             onKeyDown={e => onCtrlEnterPress(e)}
                             onChange={e => setTaskTitle(e.target.value)}
-                            placeholder="Название новой задачи" 
+                            placeholder={t('common:new_task_name')}
                             tabIndex={1}
-                            className="font-montserrat mx-auto rounded-sm border border-slate-800 bg-gray-800 py-1 px-3 tracking-wide w-full"/>  
+                            className="font-montserrat mx-auto rounded-sm border dark:border-slate-800 dark:bg-gray-800 py-1 px-3 tracking-wide w-full"/>  
                             <button 
                                 tabIndex={3}
                                 type="submit" 
-                                className={`font-montserrat mx-auto whitespace-pre-line rounded-sm bg-gradient-to-br from-gray-700 to-gray-800 hover:from-gray-700 p-3 text-xl font-bold text-neutral-100 w-25`}>
+                                className={`font-montserrat mx-auto whitespace-pre-line rounded-sm bg-gradient-to-br ${buttonStyleProp} p-3 text-xl font-bold dark:text-neutral-100 w-25`}>
                                 <PlusIcon width={12}/>
                             </button>        
                     </div>
@@ -131,8 +151,8 @@ const Tasks = () => {
                         value={taskContent}
                         onKeyDown={e => onCtrlEnterPress(e)}
                         onChange={e => setTaskContent(e.target.value)}
-                        placeholder="Опиши свои мысли" 
-                        className={`font-montserrat rounded-sm border border-slate-800 bg-gray-800 p-3 tracking-wide 
+                        placeholder={t('common:describe_task')} 
+                        className={`font-montserrat rounded-sm border dark:border-slate-800 dark:bg-gray-800 p-3 tracking-wide 
                         ${
                             !taskTitle ? '-mt-24 -z-10 opacity-0' : 'mt-0 z-0 opacity-100'
                         }
@@ -157,5 +177,13 @@ const Tasks = () => {
         </div>
     </>);
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {  
+    return {
+      props: {
+        ...(await serverSideTranslations(locale ?? "en", ["common"])),
+      },
+    };
+  };
 
 export default Tasks;

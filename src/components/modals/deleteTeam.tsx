@@ -3,6 +3,7 @@ import moment from "moment";
 import 'moment/locale/ru';
 import { type Team } from "~/server/api/routers/Team";
 import { api } from "~/utils/api";
+import { useTranslation } from 'next-i18next';
 moment.locale('ru')
 
 const DeleteTeamModal: React.FC<{ 
@@ -11,7 +12,7 @@ const DeleteTeamModal: React.FC<{
         isOpen: boolean | undefined,
         onOpenChange: () => void,
     }> = ({team, onDelete, isOpen, onOpenChange}) => {     
-
+        const { t } = useTranslation(['ru', 'en']);
         const {mutate: deletionMutation} = api.Team.deleteTeam.useMutation(
             {
                 onSuccess() {
@@ -37,17 +38,17 @@ const DeleteTeamModal: React.FC<{
                         <>
                             <ModalHeader className="flex flex-col gap-1">Ты действительно хочешь удалить команду?</ModalHeader>
                             <ModalBody>
-                                Команда &quot;{team?.title}&quot; будет удалена.
+                                {t('common:team')} &quot;{team?.title}&quot; {t('common:will_be_deleted')}.
                             </ModalBody>
                             <ModalFooter>
                                 <Button color="secondary" variant="light" onPress={() => onClose()} className="font-montserrat mr-auto">
-                                    Отмена
+                                    {t('common:cancel')}
                                 </Button>
                                 <Button color="danger" onPress={() => {
                                         deletionMutation({teamId: team?.id ?? ""});
                                         onClose(); 
                                     }} className="font-montserrat">
-                                    Подтвердить
+                                    {t('common:confirm')}
                                 </Button>
                             </ModalFooter>
                         </>

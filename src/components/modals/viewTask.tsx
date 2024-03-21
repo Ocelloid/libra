@@ -1,10 +1,11 @@
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
-import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader} from "@nextui-org/react";
+import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Tooltip} from "@nextui-org/react";
 import moment from "moment";
 import 'moment/locale/ru';
 import { useState } from "react";
 import { type WeightedTask } from "~/server/api/routers/WeightedTask";
 import { api } from "~/utils/api";
+import { useTranslation } from 'next-i18next';
 moment.locale('ru')
 
 const ViewTaskModal: React.FC<{
@@ -13,10 +14,11 @@ const ViewTaskModal: React.FC<{
         onOpenChange: () => void,
         onDeleteOpen: () => void,
 }> = ({task, isOpen, onOpenChange, onDeleteOpen}) => {  
-    const [isEditing,    setIsEditing   ] = useState<boolean>(false); 
+    const [isEditing,   setIsEditing   ] = useState<boolean>(false); 
     const [taskTitle,   setEntryTitle  ] = useState<string>(task.title);
     const [taskContent, setEntryContent] = useState<string>(task.content);
-    
+    const { t } = useTranslation(['ru', 'en']);
+
     const { mutate: updateMutation } = api.WeightedTask.updateTask.useMutation();
 
     const handleFormSubmit = (e?: React.FormEvent<HTMLFormElement>) => {
@@ -35,6 +37,7 @@ const ViewTaskModal: React.FC<{
         <Modal 
             isOpen={isOpen} 
             onOpenChange={onOpenChange}
+            onClose={() => setIsEditing(false)}
             size="2xl" 
             placement="top-center" 
             backdrop="blur"
@@ -60,11 +63,16 @@ const ViewTaskModal: React.FC<{
                                         disabled={true}
                                         value={taskTitle}
                                         className="font-montserrat mx-auto rounded-sm border-slate-800 bg-gray-800 bg-opacity-60 px-2 tracking-wide w-full"/>                                                   
-                                    <button className="rounded-sm bg-gradient-to-br from-gray-700 to-gray-800 p-2 ml-auto hover:from-gray-700" 
-                                        tabIndex={10003}
-                                        onClick={() => setIsEditing(true)}>
-                                        <PencilIcon width={25} className="text-neutral-100"/>
-                                    </button>
+                                    <Tooltip
+                                        className="text-tiny text-default-500 rounded-md"
+                                        content={t('common:edit_task')}
+                                        placement="top">
+                                        <button className="rounded-sm bg-gradient-to-br from-gray-700 to-gray-800 p-2 ml-auto hover:from-gray-700" 
+                                            tabIndex={10003}
+                                            onClick={() => setIsEditing(true)}>
+                                            <PencilIcon width={25} className="text-neutral-100"/>
+                                        </button>                                        
+                                    </Tooltip>
                                 </div>   
                                 <textarea 
                                     cols={30} 
@@ -83,13 +91,18 @@ const ViewTaskModal: React.FC<{
                                         tabIndex={10001}
                                         onKeyDown={e => onCtrlEnterPress(e)}
                                         onChange={e => setEntryTitle(e.target.value)}
-                                        placeholder="Название новой задачи" 
+                                        placeholder={t('common:new_task_name')}
                                         className="font-montserrat mx-auto rounded-sm border-slate-800 bg-gray-800 bg-opacity-60 px-2 tracking-wide w-full"/>                                                   
-                                    <button className="rounded-sm bg-gradient-to-br from-red-500 to-red-800 p-2 ml-auto hover:from-red-500" 
-                                        tabIndex={10003}
-                                        onClick={() => onDeleteOpen()}>
-                                        <TrashIcon width={25} className="text-neutral-100"/>
-                                    </button>
+                                    <Tooltip
+                                        className="text-tiny text-default-500 rounded-md"
+                                        content={t('common:delete_task')}
+                                        placement="top">
+                                        <button className="rounded-sm bg-gradient-to-br from-red-500 to-red-800 p-2 ml-auto hover:from-red-500" 
+                                            tabIndex={10003}
+                                            onClick={() => onDeleteOpen()}>
+                                            <TrashIcon width={25} className="text-neutral-100"/>
+                                        </button>
+                                    </Tooltip>
                                 </div>   
                                 <textarea 
                                     cols={30} 
@@ -99,17 +112,17 @@ const ViewTaskModal: React.FC<{
                                     value={taskContent}
                                     onKeyDown={e => onCtrlEnterPress(e)}
                                     onChange={e => setEntryContent(e.target.value)}
-                                    placeholder="Опиши свои мысли" 
+                                    placeholder={t('common:describe_task')}
                                     className={`font-montserrat mx-auto rounded-sm border border-slate-800 bg-gray-800 bg-opacity-60 p-2 tracking-wide w-full`}>
                                 </textarea>
                             </form>} 
                         </ModalBody>
                         {isEditing && <ModalFooter>
                             <Button color="secondary" variant="light" onPress={() => setIsEditing(false)} className="font-montserrat mr-auto">
-                                Отмена
+                                {t('common:cancel')}
                             </Button>
                             <Button color="primary" onPress={() => {handleFormSubmit(); setIsEditing(false);}} className="font-montserrat">
-                                Обновить
+                                {t('common:update')}
                             </Button>
                         </ModalFooter>}
                     </>

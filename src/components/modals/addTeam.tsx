@@ -5,6 +5,7 @@ import { useState } from "react";
 import { api } from "~/utils/api";
 import { ReactMultiEmail } from 'react-multi-email';
 import { useSession } from "next-auth/react";
+import { useTranslation } from 'next-i18next';
 moment.locale('ru')
 
 const AddTeamModal: React.FC<{
@@ -17,6 +18,7 @@ const AddTeamModal: React.FC<{
     const [teamDescription, setTeamDescription] = useState<string>("");
     const [emails, setEmails                  ] = useState<string[]>([sessionData?.user?.email ?? ""]);
     const [userErrorOpen, setUserErrorOpen    ] = useState<boolean>(false);
+    const { t } = useTranslation(['ru', 'en']);
 
     
     const { mutate: createMutation } = api.Team.createTeam.useMutation();
@@ -87,7 +89,7 @@ const AddTeamModal: React.FC<{
                         <ModalHeader className="flex flex-col gap-1">
                             <div className="flex flex-row items-center justify-between">
                                 <h3 className="font-montserrat text-neutral-100">
-                                    Добавить команду
+                                    {t('common:add_team')}
                                 </h3>
                             </div>         
                         </ModalHeader>
@@ -100,7 +102,7 @@ const AddTeamModal: React.FC<{
                                         value={teamTitle}
                                         onKeyDown={e => onCtrlEnterPress(e)}
                                         onChange={e => setTeamTitle(e.target.value)}
-                                        placeholder="Название новой команды" 
+                                        placeholder={t('common:team_name')}
                                         className="font-montserrat mx-auto rounded-sm border-slate-800 bg-gray-800 bg-opacity-60 p-2 tracking-wide w-full"/>                                                   
                                 </div>   
                                 <textarea 
@@ -110,11 +112,11 @@ const AddTeamModal: React.FC<{
                                     value={teamDescription}
                                     onKeyDown={e => onCtrlEnterPress(e)}
                                     onChange={e => setTeamDescription(e.target.value)}
-                                    placeholder="Опиши свою команду" 
+                                    placeholder={t('common:describe_team')} 
                                     className={`font-montserrat mx-auto rounded-sm border border-slate-800 bg-gray-800 bg-opacity-60 p-2 tracking-wide w-full`}>
                                 </textarea>                 
                                 <ReactMultiEmail
-                                    placeholder='email пользователя'
+                                    placeholder='email'
                                     emails={emails}
                                     onChange={handleEmailsChange}
                                     getLabel={(email, index, removeEmail) => {
@@ -139,21 +141,21 @@ const AddTeamModal: React.FC<{
                                         "text-neutral-100 bg-gradient-to-br from-red-700 to-red-500",
                                         ],
                                     }}
-                                    content="Пользователь не найден">
+                                    content={t('common:user_not_found')}>
                                     <div></div>
                                 </Tooltip>
                             </form>           
                         </ModalBody>
                         <ModalFooter>
                             <Button color="secondary" variant="light" onPress={() => {onRefetch(); resetForm(); onClose();}} className="font-montserrat mr-auto">
-                                Отмена
+                                {t('common:cancel')}
                             </Button>
                             <Button 
                                 isDisabled={!teamTitle || !teamDescription || !emails.length} 
                                 color="primary" 
                                 onPress={() => {handleFormSubmit(); onRefetch(); resetForm(); onClose();}} 
                                 className="font-montserrat">
-                                Добавить
+                                {t('common:add')}
                             </Button>
                         </ModalFooter>
                     </>

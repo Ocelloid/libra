@@ -8,6 +8,8 @@ import { useEffect, useState } from "react";
 import { ArrowLeftIcon, ArrowRightIcon, PlusIcon } from "@heroicons/react/24/solid";
 import DeleteTaskModal from "./modals/deleteTask";
 import ViewTaskModal from "./modals/viewTask";
+import { useTranslation } from 'next-i18next';
+import { useTheme } from "next-themes";
 moment.locale('ru')
 
 const TaskCard: React.FC<{
@@ -19,6 +21,7 @@ const TaskCard: React.FC<{
     isChild?: boolean,
     className?: string,
 }> = ({task, handleWeightChange, onDelete, fullWidth, tabIndex, isChild, className}) => {
+    const { t } = useTranslation(['ru', 'en']);
     const [childTasks, setchildTasks] = useState<WeightedTask[]>(
         task.childTasks 
             ? task.childTasks.sort((a: WeightedTask, b: WeightedTask) => b.weightRating - a.weightRating)
@@ -34,12 +37,23 @@ const TaskCard: React.FC<{
         onOpen: onEditOpen,   
         onOpenChange: onEditOpenChange  } = useDisclosure();
 
-    const [taskUserId                   ] = useState<string>(task.userId);
-    const [inputValue,   setInputValue  ] = useState<string>(task.weightRating.toString());
+    const [ taskUserId                          ] = useState<string>(task.userId);
+    const [ inputValue,   setInputValue         ] = useState<string>(task.weightRating.toString());
 
-    const [childTitle,   setChildTitle  ] = useState<string>("");
-    const [childContent, setChildContent] = useState<string>("");
-    const [childRating,  setChildRating ] = useState<number>(50);
+    const [ childTitle,   setChildTitle         ] = useState<string>("");
+    const [ childContent, setChildContent       ] = useState<string>("");
+    const [ childRating,  setChildRating        ] = useState<number>(50);
+    const [ buttonStyleProp, setButtonStyleProp ] = useState("");
+    const { theme                               } = useTheme();
+
+    //bg-gradient-to-br from-gray-700 to-gray-800 hover:from-gray-700
+  
+    useEffect(() => {
+        const newStyleProp = (theme === "light") 
+            ? "from-gray-300 to-gray-400 hover:to-gray-700"
+            : "from-gray-700 to-gray-800 hover:from-gray-700";
+            setButtonStyleProp(newStyleProp);
+      }, [theme]);
 
     const { mutate: updateTaskMutation } = api.WeightedTask.updateTaskWeight.useMutation();
 
@@ -115,15 +129,15 @@ const TaskCard: React.FC<{
             `truncate ${isChild 
                 ? "ml-2 pl-2 pt-0" 
                 : `p-3 pl-2 pb-0 pr-0 ${fullWidth ? "" : "mx-10 md:mx-auto md:w-3/4 lg:w-2/3 xl:w-1/2 2xl:w-3/7"} mb-5 rounded-md`
-            } flex flex-col bg-slate-800 bg-opacity-30 ${className}`}>
+            } flex flex-col dark:bg-slate-800 dark:bg-opacity-30 bg-slate-300 bg-opacity-30 ${className}`}>
             <DeleteTaskModal task={task} isOpen={isDeleteOpen} onOpenChange={onDeleteOpenChange} onDelete={onDelete}/>
             <ViewTaskModal task={task} isOpen={isEditOpen} onOpenChange={onEditOpenChange} onDeleteOpen={onDeleteOpen}/>
             <div className={`flex flex-row ${isChild ? '' : 'mr-3'}`}>
                 <Button 
                     variant="bordered" 
-                    className="w-full hover:text-gray-300 border-none font-montserrat text-medium p-0" 
+                    className="w-full dark:hover:text-gray-300 border-none font-montserrat text-medium p-0" 
                     onClick={onEditOpen}>
-                    <p className="font-montserrat px-2 text-lg text-neutral-100 hover:text-gray-300 w-full text-left">
+                    <p className="font-montserrat px-2 text-lg dark:text-neutral-100 hover:text-gray-700 dark:hover:text-gray-300 w-full text-left">
                         {task.title}
                     </p>
                 </Button> 
@@ -154,7 +168,7 @@ const TaskCard: React.FC<{
                                 handleWeightChange(task.id.toString(), 0, true);
                                 setInputValue("0");                    
                             }}>
-                            <ArrowLeftIcon width={24} className="text-neutral-100"/>
+                            <ArrowLeftIcon width={24} className="dark:text-neutral-100"/>
                         </Button>
                     }
                     endContent={
@@ -166,39 +180,37 @@ const TaskCard: React.FC<{
                                 handleWeightChange(task.id.toString(), 100, true);
                                 setInputValue("100");             
                             }}>
-                            <ArrowRightIcon width={24} className="text-neutral-100"/>
+                            <ArrowRightIcon width={24} className="dark:text-neutral-100"/>
                         </Button>
                     }      
                     classNames={{
                         label: "ml-auto text-medium text-gray-500 font-montserrat",
-                        filler: "bg-neutral-100 hover:bg-gray-300",
-                        thumb: "bg-neutral-100 hover:bg-gray-300"
+                        filler: "dark:bg-neutral-100 hover:bg-gray-300",
+                        thumb: "dark:bg-neutral-100 hover:bg-gray-300"
                     }}
                     className="gap-0 py-1"/>
-                    <Tooltip
-                        className="text-tiny text-default-500 rounded-md"
-                        content="Нажми Enter, чтобы применить"
-                        placement="top">
-                        <input
-                            className={`px-0 py-0.5 w-9 my-1 text-center text-medium font-montserrat
-                                text-gray-500 font-medium bg-slate-800 outline-none transition-colors
-                                rounded-small border-medium border-transparent hover:border-primary 
-                                focus:border-primary bg-transparent  ${isChild ? 'mr-3' : ''}`}
-                            type="text"
-                            aria-label="Вес"
-                            value={inputValue}
-                            onChange={(e) => {
-                                const v = e.target.value;
-                                setInputValue(v);
-                            }}
-                            onKeyDown={(e) => {
-                                if (e.key === "Enter" && !isNaN(Number(inputValue))) {
-                                    handleWeightChange(task.id.toString(), Number(inputValue), true);
-                                }
-                            }}/>
-                    </Tooltip>
-                <div>
-            </div>
+                <Tooltip
+                    className="text-tiny text-default-500 rounded-md"
+                    content={t('common:enter_to_submit')}
+                    placement="top">
+                    <input
+                        className={`px-0 py-0.5 w-9 my-1 text-center text-medium font-montserrat
+                            text-gray-500 font-medium bg-slate-800 outline-none transition-colors
+                            rounded-small border-medium border-transparent hover:border-primary 
+                            focus:border-primary bg-transparent  ${isChild ? 'mr-3' : ''}`}
+                        type="text"
+                        aria-label="weight"
+                        value={inputValue}
+                        onChange={(e) => {
+                            const v = e.target.value;
+                            setInputValue(v);
+                        }}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter" && !isNaN(Number(inputValue))) {
+                                handleWeightChange(task.id.toString(), Number(inputValue), true);
+                            }
+                        }}/>
+                </Tooltip>                
             </div>
             <form className={`flex flex-col justify-center gap-2 pl-2 ${isChild ? 'pb-0' : 'pb-2 mr-3'}`} 
                 onSubmit={e => handleNewChild(e)}>
@@ -209,14 +221,19 @@ const TaskCard: React.FC<{
                         value={childTitle}
                         onKeyDown={e => onCtrlEnterPress(e)}
                         onChange={e => setChildTitle(e.target.value)}
-                        placeholder="Название новой подзадачи" 
-                        className="font-montserrat mx-auto rounded-sm border border-slate-800 bg-gray-800 bg-opacity-60 py-1 px-3 tracking-wide w-full"/>  
-                        <button 
-                            tabIndex={tabIndex + 3}
-                            type="submit" 
-                            className={`font-montserrat mx-auto whitespace-pre-line rounded-sm bg-gradient-to-br from-gray-700 to-gray-800 hover:from-gray-700 p-3 text-xl font-bold text-neutral-100 w-25 ${isChild ? 'mr-3' : ''}`}>
-                            <PlusIcon width={12}/>
-                        </button>        
+                        placeholder={t('common:new_subtask_name')}
+                        className="font-montserrat mx-auto rounded-sm border dark:border-slate-800 dark:bg-gray-800 bg-opacity-60 py-1 px-3 tracking-wide w-full"/>  
+                        <Tooltip
+                            className="text-tiny text-default-500 rounded-md"
+                            content={t('common:add_task')}
+                            placement="bottom">
+                            <button 
+                                tabIndex={tabIndex + 3}
+                                type="submit" 
+                                className={`font-montserrat mx-auto whitespace-pre-line rounded-sm bg-gradient-to-br ${buttonStyleProp} p-3 text-xl font-bold dark:text-neutral-100 w-25 ${isChild ? 'mr-3' : ''}`}>
+                                <PlusIcon width={12}/>
+                            </button>     
+                        </Tooltip>     
                 </div>
                 <textarea 
                     cols={30} 
@@ -226,8 +243,8 @@ const TaskCard: React.FC<{
                     value={childContent}
                     onKeyDown={e => onCtrlEnterPress(e)}
                     onChange={e => setChildContent(e.target.value)}
-                    placeholder="Опиши свои мысли" 
-                    className={`font-montserrat rounded-sm border border-slate-800 bg-gray-800 bg-opacity-60 p-3 tracking-wide 
+                    placeholder={t('common:describe_task')}
+                    className={`font-montserrat rounded-sm border dark:border-slate-800 dark:bg-gray-800 bg-opacity-60 p-3 tracking-wide 
                     ${
                         !childTitle ? '-mt-24 -z-10 opacity-0' : 'mt-0 z-0 opacity-100'
                     }

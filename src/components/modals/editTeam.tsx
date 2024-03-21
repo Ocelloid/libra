@@ -7,6 +7,7 @@ import { ReactMultiEmail } from 'react-multi-email';
 import { useSession } from "next-auth/react";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import Loading from "../Loading";
+import { useTranslation } from 'next-i18next';
 moment.locale('ru')
 
 const EditTeamModal: React.FC<{
@@ -16,6 +17,7 @@ const EditTeamModal: React.FC<{
         onRefetch:() => void,
         onDeleteTeam: () => void,
 }> = ({isOpen, teamId, onOpenChange, onRefetch, onDeleteTeam}) => {  
+    const { t } = useTranslation(['ru', 'en']);
     const { data: sessionData                 } = useSession();
     const [teamTitle,       setTeamTitle      ] = useState<string>("");
     const [teamDescription, setTeamDescription] = useState<string>("");
@@ -103,7 +105,7 @@ const EditTeamModal: React.FC<{
                         <ModalHeader className="flex flex-col gap-1">
                             <div className="flex flex-row items-center justify-between">
                                 <h3 className="font-montserrat text-neutral-100">
-                                    Изменить команду
+                                    {t('common:edit_team')}
                                 </h3>
                             </div>         
                         </ModalHeader>
@@ -116,7 +118,7 @@ const EditTeamModal: React.FC<{
                                         value={teamTitle}
                                         onKeyDown={e => onCtrlEnterPress(e)}
                                         onChange={e => setTeamTitle(e.target.value)}
-                                        placeholder="Название новой команды" 
+                                        placeholder={t('common:team_name')} 
                                         className="font-montserrat mx-auto rounded-sm border-slate-800 bg-gray-800 bg-opacity-60 p-2 tracking-wide w-full"/>                                                    
                                 </div>   
                                 <textarea 
@@ -126,11 +128,11 @@ const EditTeamModal: React.FC<{
                                     value={teamDescription}
                                     onKeyDown={e => onCtrlEnterPress(e)}
                                     onChange={e => setTeamDescription(e.target.value)}
-                                    placeholder="Опиши свою команду" 
+                                    placeholder={t('common:describe_team')}
                                     className={`font-montserrat mx-auto rounded-sm border border-slate-800 bg-gray-800 bg-opacity-60 p-2 tracking-wide w-full`}>
                                 </textarea>                 
                                 <ReactMultiEmail
-                                    placeholder='email пользователя'
+                                    placeholder='email'
                                     emails={emails}
                                     onChange={handleEmailsChange}
                                     getLabel={(email, index, removeEmail) => {
@@ -155,26 +157,32 @@ const EditTeamModal: React.FC<{
                                         "text-neutral-100 bg-gradient-to-br from-red-700 to-red-500",
                                         ],
                                     }}
-                                    content="Пользователь не найден">
+                                    content={t('common:user_not_found')}>
                                     <div></div>
                                 </Tooltip>
                             </form>           
                         </ModalBody>
                         <ModalFooter>
                             <Button color="secondary" variant="light" onPress={() => {onRefetch(); resetForm(); onClose();}} className="font-montserrat mr-auto">
-                                Отмена
+                                {t('common:cancel')}
                             </Button>
-                            <button className="rounded-sm bg-gradient-to-br from-red-500 to-red-800 p-2 ml-auto hover:from-red-500" 
-                                tabIndex={10003}
-                                onClick={() => onDeleteTeam()}>
-                                <TrashIcon width={25} className="text-neutral-100"/>
-                            </button> 
+                                                              
+                            <Tooltip
+                                placement="top"                                
+                                content="Удалить задачу">
+                                <button className="rounded-sm bg-gradient-to-br from-red-500 to-red-800 p-2 ml-auto hover:from-red-500" 
+                                    tabIndex={10003}
+                                    onClick={() => onDeleteTeam()}>
+                                    <TrashIcon width={25} className="text-neutral-100"/>
+                                </button> 
+                            </Tooltip>
+                            
                             <Button 
                                 isDisabled={!teamTitle || !teamDescription || !emails.length} 
                                 color="primary" 
                                 onPress={() => {handleFormSubmit(); onRefetch(); resetForm(); onClose();}} 
                                 className="font-montserrat">
-                                Обновить
+                                {t('common:update')}
                             </Button>
                         </ModalFooter>
                     </>

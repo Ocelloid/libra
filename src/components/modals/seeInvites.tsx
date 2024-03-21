@@ -5,6 +5,7 @@ import { useState } from "react";
 import { api } from "~/utils/api";
 import { type Membership } from "~/server/api/routers/Team";
 import { CheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { useTranslation } from 'next-i18next';
 moment.locale('ru')
 
 interface ConfirmedMembership extends Membership {
@@ -18,7 +19,7 @@ const SeeInvitesModal: React.FC<{
         onRefetch: () => void,
 }> = ({isOpen, onOpenChange, onRefetch}) => {  
     const [ invites, setInvites ] = useState<ConfirmedMembership[]>([]);    
-
+    const { t } = useTranslation(['ru', 'en']);
     const { mutate: membershipMutation } = api.Team.respondToInvitation.useMutation();
 
     const { refetch } = api.Team.getAllInvitations.useQuery(
@@ -72,27 +73,27 @@ const SeeInvitesModal: React.FC<{
                         <ModalHeader className="flex flex-col gap-1">
                             <div className="flex flex-row items-center justify-between">
                                 <h3 className="font-montserrat text-neutral-100">
-                                    Приглашения
+                                    {t('common:invites')}
                                 </h3>
                             </div>         
                         </ModalHeader>
                         <ModalBody className="pt-0">
                             {invites.map(invite => <div key={invite.id} className="flex flex-1 flex-row gap-1">
                                 <div className="flex flex-col flex-1 truncate py-2">
-                                    {invite.team.title}
+                                    {invite.team?.title}
                                 </div>
                                 {invite.status === "invited" && <div className="flex flex-row gap-1">
                                     <Button color="success" className="min-w-unit-10 px-2" onClick={() => {
                                             if (invite.confirmAccept) handleResponse(invite.id, true)
                                             else handleConfirm(invite.id, true, false)
                                         }}>
-                                        {invite.confirmAccept ? "Принять" : <CheckIcon/>}
+                                        {invite.confirmAccept ? t('common:accept') : <CheckIcon/>}
                                     </Button>
                                     <Button color="danger" className="min-w-unit-10 px-2" onClick={() => {
                                             if (invite.confirmDecline) handleResponse(invite.id, false)
                                             else handleConfirm(invite.id, false, true)
                                         }}>
-                                        {invite.confirmDecline ? "Отклонить" : <XMarkIcon/>}
+                                        {invite.confirmDecline ? t('common:decline')  : <XMarkIcon/>}
                                     </Button>
                                 </div>}
                             </div>)}

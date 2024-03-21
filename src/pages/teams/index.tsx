@@ -19,20 +19,29 @@ import remarkGfm from 'remark-gfm'
 import moment from "moment";
 import EditTeamModal from "~/components/modals/editTeam";
 import DeleteTeamModal from "~/components/modals/deleteTeam";
+import { useTranslation } from 'next-i18next';
+import { type GetServerSideProps } from "next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useTheme } from "next-themes";
         
 const Teams = () => {
-    const { status: sessionStatus           } = useSession();
-    const { data: sessionData               } = useSession();
-    const { replace                         } = useRouter();    
-    const [teams,          setTeams         ] = useState<Team[]>([]);      
-    const [teamMessages,   setTeamMessages  ] = useState<Message[]>([]);    
-    const [teamTasks,      setTeamTasks     ] = useState<WeightedTask[]>([]);                
-    const [teamId,         setTeamId        ] = useState<string>("");                  
-    const [team,           setTeam          ] = useState<Team>(); 
-    const [taskTitle,      setTaskTitle     ] = useState<string>("");
-    const [taskContent,    setTaskContent   ] = useState<string>("");    
-    const [messageContent, setMessageContent] = useState<string>("");    
-    const [isSystemHidden, setIsSystemHidden] = useState<boolean>(true);
+    const { t } = useTranslation(['ru', 'en']);
+    const { status: sessionStatus               } = useSession();
+    const { data: sessionData                   } = useSession();
+    const { replace                             } = useRouter();   
+    const [ styleProp, setStyleProp             ] = useState({});
+    const { theme                               } = useTheme();
+    const [ teams,          setTeams            ] = useState<Team[]>([]);      
+    const [ teamMessages,   setTeamMessages     ] = useState<Message[]>([]);    
+    const [ teamTasks,      setTeamTasks        ] = useState<WeightedTask[]>([]);                
+    const [ teamId,         setTeamId           ] = useState<string>("");                  
+    const [ team,           setTeam             ] = useState<Team>(); 
+    const [ taskTitle,      setTaskTitle        ] = useState<string>("");
+    const [ taskContent,    setTaskContent      ] = useState<string>("");    
+    const [ messageContent, setMessageContent   ] = useState<string>("");    
+    const [ isSystemHidden, setIsSystemHidden   ] = useState<boolean>(true);
+    const [ buttonStyleProp, setButtonStyleProp ] = useState("");
+
     const {
         isOpen: isAddingOpen, 
         onOpen: onAddingOpen, 
@@ -47,6 +56,18 @@ const Teams = () => {
         onOpenChange: onDeleteTeamOpenChange} = useDisclosure();  
 
     const utils = api.useUtils();
+  
+    useEffect(() => {
+      const newStyleProp = {backgroundImage:`url(/background-${theme}.png)`, backgroundSize: '100% 100%'};
+      setStyleProp(newStyleProp);
+    }, [theme]);
+
+    useEffect(() => {
+        const newStyleProp = (theme === "light") 
+            ? "from-gray-300 to-gray-400 hover:to-gray-700"
+            : "from-gray-700 to-gray-800 hover:from-gray-700";
+        setButtonStyleProp(newStyleProp);
+    }, [theme]);
 
     useEffect(() => {
         if (sessionStatus === "unauthenticated") {
@@ -193,7 +214,7 @@ const Teams = () => {
     if (sessionStatus === "loading" || isTeamsLoading || isTasksLoading || isMessagesLoading ) { return <Loading/> }
     if (!sessionData) return;
     return(<>
-        <Head><title>Команды</title></Head>
+        <Head><title>{t('common:teams')}</title></Head>
         <AddTeamModal isOpen={isAddingOpen} onOpenChange={onAddingOpenChange} onRefetch={handleRefetch}/>
         <DeleteTeamModal
             team={team} 
@@ -206,11 +227,11 @@ const Teams = () => {
             onOpenChange={onEditingOpenChange} 
             onRefetch={handleRefetch} 
             onDeleteTeam={onDeleteTeamOpen}/>
-        <div className="h-screen w-screen flex flex-col overflow-x-hidden overflow-y-hidden">       
+        <div className="h-screen w-screen flex flex-col overflow-x-hidden overflow-y-hidden" style={styleProp}>       
             <section className="sec-container">
                 <div className="flex flex-1 flex-col md:w-3/4 lg:w-2/3 xl:w-1/2 2xl:w-3/7 mx-10 md:mx-auto">
                     <div className="flex flex-row items-center justify-between gap-1">
-                        <Select variant="underlined" label="Выбери команду" className=""
+                        <Select variant="underlined" label={t('common:choose_team')} className=""
                             selectedKeys={[teamId]}
                             onChange={e => {
                                 setTeamId(e.target.value ? e.target.value : teamId);
@@ -226,28 +247,28 @@ const Teams = () => {
                         </Select>
                         <Tooltip
                             className="text-tiny text-default-500 rounded-md"
-                            content="Добавить команду"
+                            content={t('common:add_team')}
                             placement="top">
                             <Button 
                                 variant="bordered" 
                                 onClick={onAddingOpen}
-                                className="min-w-unit-10 flex-1 hover:text-gray-300 border-none font-montserrat text-medium py-0 px-2">
+                                className="min-w-unit-10 flex-1 hover:text-gray-700 dark:hover:text-gray-300 border-none font-montserrat text-medium py-0 px-2">
                                 <PlusIcon width={25} className="my-auto"/>
                             </Button>
                         </Tooltip>
                         {(team?.creatorId === sessionData.user.id) && <Tooltip
                             className="text-tiny text-default-500 rounded-md"
-                            content="Изменить команду"
+                            content={t('common:edit_team')}
                             placement="top">
                             <Button 
                                 variant="bordered" 
                                 onClick={onEditingOpen}
-                                className="min-w-unit-10 flex-1 hover:text-gray-300 border-none font-montserrat text-medium py-0 px-2">
+                                className="min-w-unit-10 flex-1 hover:text-gray-700 dark:hover:text-gray-300 border-none font-montserrat text-medium py-0 px-2">
                                 <PencilIcon width={25} className="my-auto"/>
                             </Button>
                         </Tooltip>}
                     </div>
-                    {!!teamId && <Tabs aria-label="Вкладки" variant="underlined"
+                    {!!teamId && <Tabs aria-label="tabs" variant="underlined"
                         classNames={{
                             tabList: "gap-6 w-full relative rounded-none p-0 border-b border-divider",
                             cursor: "w-full bg-[#22d3ee]",
@@ -255,7 +276,7 @@ const Teams = () => {
                         }}>
                         <Tab key="tasks" title={
                             <div className="flex items-center space-x-2">
-                                <span className="font-montserrat">Задачи</span>
+                                <span className="font-montserrat">{t('common:tasks')}</span>
                                 <Chip size="sm" variant="faded">{teamTasks.length}</Chip>
                             </div>
                         }>     
@@ -267,15 +288,20 @@ const Teams = () => {
                                         value={taskTitle}
                                         onKeyDown={e => onTaskCtrlEnterPress(e)}
                                         onChange={e => setTaskTitle(e.target.value)}
-                                        placeholder="Название новой задачи" 
+                                        placeholder={t('common:new_task_name')}
                                         tabIndex={1}
-                                        className="font-montserrat mx-auto rounded-sm border border-slate-800 bg-gray-800 py-1 px-3 tracking-wide w-full"/>  
-                                        <button 
-                                            tabIndex={3}
-                                            type="submit" 
-                                            className={`font-montserrat mx-auto whitespace-pre-line rounded-sm bg-gradient-to-br from-gray-700 to-gray-800 hover:from-gray-700 p-3 text-xl font-bold text-neutral-100 w-25`}>
-                                            <PlusIcon width={12}/>
-                                        </button>        
+                                        className="font-montserrat mx-auto rounded-sm border dark:border-slate-800 dark:bg-gray-800 py-1 px-3 tracking-wide w-full"/>  
+                                        <Tooltip
+                                            className="text-tiny text-default-500 rounded-md"
+                                            content={t('common:add_task')}
+                                            placement="top">
+                                            <button 
+                                                tabIndex={3}
+                                                type="submit" 
+                                                className={`font-montserrat mx-auto whitespace-pre-line rounded-sm bg-gradient-to-br ${buttonStyleProp} p-3 text-xl font-bold dark:text-neutral-100 w-25`}>
+                                                <PlusIcon width={12}/>
+                                            </button>
+                                        </Tooltip>        
                                 </div>
                                 <textarea 
                                     cols={30} 
@@ -285,8 +311,8 @@ const Teams = () => {
                                     value={taskContent}
                                     onKeyDown={e => onTaskCtrlEnterPress(e)}
                                     onChange={e => setTaskContent(e.target.value)}
-                                    placeholder="Опиши свои мысли" 
-                                    className={`font-montserrat rounded-sm border border-slate-800 bg-gray-800 p-3 tracking-wide 
+                                    placeholder={t('common:describe_task')}
+                                    className={`font-montserrat rounded-sm border dark:border-slate-800 dark:bg-gray-800 p-3 tracking-wide 
                                     ${
                                         !taskTitle ? '-mt-24 -z-10 opacity-0' : 'mt-0 z-0 opacity-100'
                                     }
@@ -311,7 +337,7 @@ const Teams = () => {
                         </Tab>
                         <Tab key="messages" title={
                             <div className="flex items-center space-x-2">
-                                <span className="font-montserrat">Сообщения</span>
+                                <span className="font-montserrat">{t('common:messages')}</span>
                                 <Chip size="sm" variant="faded">{teamMessages.length}</Chip>
                             </div>
                         } className="flex flex-col flex-1">
@@ -323,7 +349,7 @@ const Teams = () => {
                                             <div key={message.id} className="felx flex-col pb-2">
                                                 <div className="flex flex-row text-gray-500">
                                                     {moment(message.dateCreated).format("D MMMM YYYY HH:mm")}&nbsp;
-                                                    {message.user?.id === "system" ? "Система" : message.user?.name}
+                                                    {message.user?.id === "system" ? t('common:system') : message.user?.name}
                                                 </div>                                                  
                                                 <ReactMarkdown 
                                                     remarkPlugins={[remarkGfm]}
@@ -337,7 +363,7 @@ const Teams = () => {
                             </div>
                             <div className="flex flex-row pb-1">                                
                                 <Checkbox isSelected={isSystemHidden} onValueChange={setIsSystemHidden}>
-                                    Скрыть системные сообщения
+                                    {t('common:hide_system_messages')}
                                 </Checkbox>
                             </div>
                             <div className="flex flex-row pb-5">
@@ -347,14 +373,14 @@ const Teams = () => {
                                             value={messageContent}
                                             onKeyDown={e => onCtrlEnterPress(e)}
                                             onChange={e => setMessageContent(e.target.value)}
-                                            className="font-montserrat rounded-sm border border-slate-800 bg-gray-800 bg-opacity-60 p-2 tracking-wide" 
-                                            placeholder="Сообщение"/>
+                                            className="font-montserrat rounded-sm border dark:border-slate-800 dark:bg-gray-800 bg-opacity-60 p-2 tracking-wide" 
+                                            placeholder={t('common:message')}/>
                                     </div>
                                     <div className="flex flex-col">
                                         <Button 
                                             onClick={handleNewMessage} 
                                             variant="bordered" 
-                                            className="w-min flex-1 hover:text-gray-300 border-none font-montserrat text-medium py-0 px-2">
+                                            className="w-min flex-1 hover:text-gray-700 dark:hover:text-gray-300 border-none font-montserrat text-medium py-0 px-2">
                                             <PaperAirplaneIcon width={25} className="my-auto"/>
                                         </Button>
                                     </div>
@@ -367,5 +393,13 @@ const Teams = () => {
         </div>
     </>)
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {  
+    return {
+      props: {
+        ...(await serverSideTranslations(locale ?? "en", ["common"])),
+      },
+    };
+  };
 
 export default Teams;

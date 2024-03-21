@@ -12,6 +12,8 @@ import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { type Session } from "next-auth";
 import superjson from "superjson";
 import { ZodError } from "zod";
+import initI18N from "~/utils/initiate-i18n";
+import { getLocaleFromURL } from "~/utils/string-utils";
 
 import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
@@ -26,6 +28,7 @@ import { db } from "~/server/db";
 
 interface CreateContextOptions {
   session: Session | null;
+  locale: string;
 }
 
 /**
@@ -40,6 +43,7 @@ interface CreateContextOptions {
  */
 const createInnerTRPCContext = (opts: CreateContextOptions) => {
   return {
+    locale: opts.locale,
     session: opts.session,
     db,
   };
@@ -56,9 +60,11 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
 
   // Get the session from the server using the getServerSession wrapper function
   const session = await getServerAuthSession({ req, res });
+  const locale = getLocaleFromURL(req.headers.referer);
 
   return createInnerTRPCContext({
     session,
+    locale
   });
 };
 
@@ -90,6 +96,11 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
  * These are the pieces you use to build your tRPC API. You should import these a lot in the
  * "/src/server/api/routers" directory.
  */
+const i18nMiddleware = t.middleware(async ({ ctx, next }) => {
+  const tFunction = await initI18N(ctx.locale);
+
+  return next({ ctx: { t: tFunction } });
+});
 
 /**
  * This is how you create new routers and sub-routers in your tRPC API.
@@ -105,7 +116,7 @@ export const createTRPCRouter = t.router;
  * guarantee that a user querying is authorized, but you can still access user session data if they
  * are logged in.
  */
-export const publicProcedure = t.procedure;
+export const publicProcedure = t.procedure.use(i18nMiddleware);
 
 /**
  * Protected (authenticated) procedure
@@ -115,7 +126,7 @@ export const publicProcedure = t.procedure;
  *
  * @see https://trpc.io/docs/procedures
  */
-export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
+export const protectedProcedure = t.procedure.use(i18nMiddleware).use(({ ctx, next }) => {
   if (!ctx.session || !ctx.session.user) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }

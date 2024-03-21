@@ -3,6 +3,7 @@ import moment from "moment";
 import 'moment/locale/ru';
 import { type WeightedTask } from "~/server/api/routers/WeightedTask";
 import { api } from "~/utils/api";
+import { useTranslation } from 'next-i18next';
 moment.locale('ru')
 
 const RecursiveChildList: React.FC<{
@@ -28,7 +29,7 @@ const DeleteTaskModal: React.FC<{
         isOpen: boolean | undefined,
         onOpenChange: () => void,
     }> = ({task, onDelete, isOpen, onOpenChange}) => {     
-
+        const { t } = useTranslation(['ru', 'en']);
         const {mutate: deletionMutation} = api.WeightedTask.deleteTask.useMutation({
             onSuccess() {
                 onDelete(task.id);
@@ -52,21 +53,21 @@ const DeleteTaskModal: React.FC<{
                         <>
                             <ModalHeader className="flex flex-col gap-1">Ты действительно хочешь удалить задачу?</ModalHeader>
                             <ModalBody>
-                                Задача &quot;{task.title}&quot; будет удалена.<br/>
+                                {t('common:task')} &quot;{task.title}&quot; {t('common:will_be_deleted')}.<br/>
                                 {!!task.childTasks?.length && <div>
-                                    Подзадачи, которые будут удалены:
+                                    {t('subtask_deletion')}:
                                     <RecursiveChildList listingEntries={task.childTasks}/>
                                 </div>}
                             </ModalBody>
                             <ModalFooter>
                                 <Button color="secondary" variant="light" onPress={() => onClose()} className="font-montserrat mr-auto">
-                                    Отмена
+                                    {t('common:add')}
                                 </Button>
                                 <Button color="danger" onPress={() => {
                                         onClose(); 
                                         deletionMutation({id: task.id});
                                     }} className="font-montserrat">
-                                    Подтвердить
+                                    {t('common:confirm')}
                                 </Button>
                             </ModalFooter>
                         </>
