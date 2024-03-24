@@ -16,7 +16,7 @@ export interface WeightedTask {
 export const WeightedTaskRouter = createTRPCRouter({
 
     createTask: protectedProcedure
-        .input(z.object({ content: z.string(), title: z.string(), weight: z.number(), teamId: z.string().optional(), parentId: z.string().optional() }))
+        .input(z.object({ content: z.string(), title: z.string(), weight: z.number(), teamId: z.string().nullable().optional(), parentId: z.string().nullable().optional() }))
         .mutation(async ({ ctx, input }) => {
             const {db, session} = ctx;
             const {content, title, weight, teamId, parentId} = input;

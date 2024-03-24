@@ -238,7 +238,6 @@ const TaskCard: React.FC<{
                 <textarea 
                     cols={30} 
                     rows={3} 
-                    required
                     tabIndex={tabIndex + 2}
                     value={childContent}
                     onKeyDown={e => onCtrlEnterPress(e)}

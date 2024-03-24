@@ -59,7 +59,7 @@ model Team {
 model WeightedTask {
   id           String    @id @default(cuid())
   title        String
-  content      String    @db.LongText
+  content      String?   @db.LongText
   userId       String
   teamId       String?
   parentId     String    @default("")
