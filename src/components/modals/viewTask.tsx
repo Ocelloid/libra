@@ -107,7 +107,6 @@ const ViewTaskModal: React.FC<{
                                 <textarea 
                                     cols={30} 
                                     rows={10} 
-                                    required
                                     tabIndex={10002}
                                     value={taskContent}
                                     onKeyDown={e => onCtrlEnterPress(e)}

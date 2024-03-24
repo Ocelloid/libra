@@ -146,7 +146,6 @@ const Tasks = () => {
                     <textarea 
                         cols={30} 
                         rows={3} 
-                        required
                         tabIndex={2}
                         value={taskContent}
                         onKeyDown={e => onCtrlEnterPress(e)}

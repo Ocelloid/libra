@@ -306,7 +306,6 @@ const Teams = () => {
                                 <textarea 
                                     cols={30} 
                                     rows={3} 
-                                    required
                                     tabIndex={2}
                                     value={taskContent}
                                     onKeyDown={e => onTaskCtrlEnterPress(e)}
