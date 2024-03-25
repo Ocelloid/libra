@@ -25,13 +25,14 @@ model Comment {
 }
 
 model Message {
-  id          String   @id @default(cuid())
-  content     String   @db.LongText
-  dateCreated DateTime @default(now())
-  teamId      String
-  creatorId   String?
-  user        User?    @relation(fields: [creatorId], references: [id], onDelete: SetNull)
-  team        Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  id           String   @id @default(cuid())
+  content      String   @db.LongText
+  dateCreated  DateTime @default(now())
+  messageProps String?  @db.LongText
+  teamId       String
+  creatorId    String?
+  user         User?    @relation(fields: [creatorId], references: [id], onDelete: SetNull)
+  team         Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
 }
 
 model Membership {

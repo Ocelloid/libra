@@ -4,7 +4,7 @@ import path from "path";
 
 const initI18N = async (locale?: string) => {
   return await i18next.use(Backend).init<FsBackendOptions>({
-    lng: locale || "en",
+    lng: locale ?? "en",
     ns: ["common"], // Add here all of the namespaces you need
     interpolation: {
       // Added this because by default it was not handling formatted dates well

@@ -45,13 +45,13 @@ export const WeightedTaskRouter = createTRPCRouter({
           data: {
             teamId: teamId,
             creatorId: "system",
-            content:
-              "Пользователь " +
-              session.user.name +
-              " добавил задачу " +
-              '"' +
-              title +
-              '"',
+            content: "common:user_added_task",
+            messageProps: [
+              session.user.name,
+              title,
+              session.user.id,
+              newWeightedTask.id,
+            ].join(","),
           },
         });
 
@@ -108,13 +108,13 @@ export const WeightedTaskRouter = createTRPCRouter({
           data: {
             teamId: task.teamId,
             creatorId: "system",
-            content:
-              "Пользователь " +
-              session.user.name +
-              " удалил задачу " +
-              '"' +
-              task.title +
-              '"',
+            content: "common:user_deleted_task",
+            messageProps: [
+              session.user.name,
+              task.title,
+              session.user.id,
+              task.id,
+            ].join(","),
           },
         });
       }
@@ -157,13 +157,13 @@ export const WeightedTaskRouter = createTRPCRouter({
           data: {
             teamId: task.teamId,
             creatorId: "system",
-            content:
-              "Пользователь " +
-              session.user.name +
-              " изменил задачу " +
-              '"' +
-              task.title +
-              '"',
+            content: "common:user_updated_task",
+            messageProps: [
+              session.user.name,
+              task.title,
+              session.user.id,
+              task.id,
+            ].join(","),
           },
         });
       }
@@ -196,15 +196,14 @@ export const WeightedTaskRouter = createTRPCRouter({
           data: {
             teamId: task.teamId,
             creatorId: "system",
-            content:
-              "Пользователь " +
-              session.user.name +
-              " изменил вес задачи " +
-              '"' +
-              task.title +
-              '"' +
-              " на " +
+            content: "common:user_changed_weight",
+            messageProps: [
+              session.user.name,
+              task.title,
               weight,
+              session.user.id,
+              task.id,
+            ].join(","),
           },
         });
       }

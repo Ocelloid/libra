@@ -6,10 +6,10 @@ export function getLocaleFromURL(url: string | undefined) {
   if (!url) return DEFAULT_LOCALE;
 
   const slugLocale = url.split("/")[3];
-  const usingSlugLocale = LOCALES.includes(slugLocale || "");
+  const usingSlugLocale = LOCALES.includes(slugLocale ?? "");
   const topLevelDomainLocale = getServerSideHostname(url).split(".").pop();
   const usingTopLevelDomainLocale = LOCALES.includes(
-    topLevelDomainLocale || ""
+    topLevelDomainLocale ?? "",
   );
 
   if (usingSlugLocale) return slugLocale!;

@@ -60,14 +60,14 @@ const DeleteTaskModal: React.FC<{
         {(onClose) => (
           <>
             <ModalHeader className="flex flex-col gap-1">
-              Ты действительно хочешь удалить задачу?
+              {t("common:confirm_delete_task")}
             </ModalHeader>
             <ModalBody>
               {t("common:task")} &quot;{task.title}&quot;{" "}
               {t("common:will_be_deleted")}.<br />
               {!!task.childTasks?.length && (
                 <div>
-                  {t("subtask_deletion")}:
+                  {t("common:subtask_deletion")}:
                   <RecursiveChildList listingEntries={task.childTasks} />
                 </div>
               )}

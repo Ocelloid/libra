@@ -42,7 +42,7 @@ const ViewTaskModal: React.FC<{
   const onCtrlEnterPress = (e: React.KeyboardEvent) => {
     if (e.ctrlKey && e.key === "Enter") {
       e.preventDefault();
-      if (!!taskTitle && !!taskContent) handleFormSubmit();
+      if (!!taskTitle) handleFormSubmit();
     }
   };
 

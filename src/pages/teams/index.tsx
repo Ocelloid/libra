@@ -235,7 +235,7 @@ const Teams = () => {
   const onTaskCtrlEnterPress = (e: React.KeyboardEvent) => {
     if (e.ctrlKey && e.key === "Enter") {
       e.preventDefault();
-      if (!!taskTitle && !!taskContent) handleNewTask();
+      if (!!taskTitle) handleNewTask();
     }
   };
 
@@ -444,7 +444,27 @@ const Teams = () => {
                       {teamMessages.map((message: Message) => {
                         if (message.user?.id === "system" && isSystemHidden)
                           return null;
-                        else
+                        else {
+                          let content = message.content;
+                          if (
+                            message.user?.id === "system" &&
+                            message.messageProps
+                          ) {
+                            content = t(message.content);
+                            content = content.replace(
+                              "msgpropuser",
+                              message.messageProps.split(",")[0] ?? "",
+                            );
+                            content = content.replace(
+                              "msgproptask",
+                              message.messageProps.split(",")[1] ?? "",
+                            );
+                            content = content.replace(
+                              "msgpropweight",
+                              message.messageProps.split(",")[2] ?? "",
+                            );
+                          }
+
                           return (
                             <div
                               key={message.id}
@@ -463,10 +483,11 @@ const Teams = () => {
                                 remarkPlugins={[remarkGfm]}
                                 className={`flex w-full flex-row whitespace-normal break-all rounded-sm border border-slate-800 bg-gray-800 bg-opacity-30 p-5 font-montserrat tracking-wide ${message.user?.id === "system" ? "text-yellow-200" : "text-normal-100"}`}
                               >
-                                {message.content}
+                                {content}
                               </ReactMarkdown>
                             </div>
                           );
+                        }
                       })}
                     </div>
                   </div>

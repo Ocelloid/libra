@@ -128,7 +128,7 @@ const Tasks = () => {
   const onCtrlEnterPress = (e: React.KeyboardEvent) => {
     if (e.ctrlKey && e.key === "Enter") {
       e.preventDefault();
-      if (!!taskTitle && !!taskContent) handleNewTask();
+      if (!!taskTitle) handleNewTask();
     }
   };
 

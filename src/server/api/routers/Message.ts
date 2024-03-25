@@ -5,6 +5,7 @@ import { type User } from "./User";
 export interface Message {
   id: string;
   content: string;
+  messageProps?: string;
   creatorId: string | null;
   teamId: string;
   dateCreated: Date;

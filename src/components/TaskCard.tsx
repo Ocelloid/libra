@@ -145,7 +145,7 @@ const TaskCard: React.FC<{
   const onCtrlEnterPress = (e: React.KeyboardEvent) => {
     if (e.ctrlKey && e.key === "Enter") {
       e.preventDefault();
-      if (!!childTitle && !!childContent) handleNewChild();
+      if (!!childTitle) handleNewChild();
     }
   };
 
