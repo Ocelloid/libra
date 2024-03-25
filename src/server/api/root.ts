@@ -1,9 +1,9 @@
-import { TeamRouter } from './routers/Team';
-import { MessageRouter } from './routers/Message';
-import { CommentRouter } from './routers/Comment';
+import { TeamRouter } from "./routers/Team";
+import { MessageRouter } from "./routers/Message";
+import { CommentRouter } from "./routers/Comment";
 import { createTRPCRouter } from "~/server/api/trpc";
 import { WeightedTaskRouter } from "~/server/api/routers/WeightedTask";
-import { UserRouter } from '~/server/api/routers/User';
+import { UserRouter } from "~/server/api/routers/User";
 
 /**
  * This is the primary router for your server.
