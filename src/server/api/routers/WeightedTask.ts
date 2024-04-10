@@ -210,7 +210,6 @@ export const WeightedTaskRouter = createTRPCRouter({
 
       await db.weightedTask.update({
         where: {
-          userId: session.user.id,
           id: id,
         },
         data: {
