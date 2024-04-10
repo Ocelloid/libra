@@ -92,29 +92,35 @@ const Teams = () => {
     }
   }, [replace, sessionStatus]);
 
-  const { isLoading: isMessagesLoading, refetch: refetchMessages } =
-    api.Message.getAllMessagesByTeam.useQuery(
-      { teamId: teamId },
-      {
-        enabled: sessionStatus === "authenticated" && teamId !== "",
-        refetchInterval: 1000,
-        onSuccess: (data: Message[]) => {
-          setTeamMessages(data);
-        },
+  const {
+    isLoading: isMessagesLoading,
+    refetch: refetchMessages,
+    fetchStatus: messagesFetchStatus,
+  } = api.Message.getAllMessagesByTeam.useQuery(
+    { teamId: teamId },
+    {
+      enabled: sessionStatus === "authenticated" && teamId !== "",
+      refetchInterval: 1000,
+      onSuccess: (data: Message[]) => {
+        setTeamMessages(data);
       },
-    );
+    },
+  );
 
-  const { isLoading: isTeamsLoading, refetch: refetchTeams } =
-    api.Team.getAllTeams.useQuery(undefined, {
-      enabled: sessionStatus === "authenticated",
-      onSuccess: (data: Team[]) => {
-        setTeams(data);
-        setTeamId(data[0]?.id ?? "");
-        setTeam(data[0]);
-      },
-    });
+  const {
+    isLoading: isTeamsLoading,
+    refetch: refetchTeams,
+    fetchStatus: teamsFetchStatus,
+  } = api.Team.getAllTeams.useQuery(undefined, {
+    enabled: sessionStatus === "authenticated",
+    onSuccess: (data: Team[]) => {
+      setTeams(data);
+      setTeamId(data[0]?.id ?? "");
+      setTeam(data[0]);
+    },
+  });
 
-  const { isLoading: isTasksLoading } =
+  const { isLoading: isTasksLoading, fetchStatus: tasksFetchStatus } =
     api.WeightedTask.getAllTasksByTeam.useQuery(
       { teamId: teamId },
       {
@@ -252,9 +258,9 @@ const Teams = () => {
 
   if (
     sessionStatus === "loading" ||
-    isTeamsLoading ||
-    isTasksLoading ||
-    isMessagesLoading
+    (isTeamsLoading && teamsFetchStatus !== 'idle') ||
+    (isTasksLoading && tasksFetchStatus !== 'idle') ||
+    (isMessagesLoading && messagesFetchStatus !== 'idle')
   ) {
     return <Loading />;
   }
