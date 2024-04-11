@@ -1,7 +1,7 @@
 {
   "subtitle": "Взвешенные списки",
   "logout": "Выйти",
-  "login_as": "Ты зашёл как",
+  "login_as": "Вы зашли как",
   "login": "Войти",
   "personal_tasks": "Личные задачи",
   "tasks": "Задачи",
@@ -41,7 +41,7 @@
   "user_changed_weight": "Пользователь msgpropuser изменил вес задачи msgproptask на msgpropweight",
   "user_deleted_task": "Пользователь msgpropuser удалил задачу msgproptask",
   "will_be_deleted": "будет удалена",
-  "confrim_delete_task": "Ты действительно хочешь удалить задачу?",
+  "confrim_delete_task": "Вы действительно хотите удалить задачу?",
   "user_not_found": "Пользователь не найден",
   "subtask_deletion": "Подзадачи, которые будут удалены",
   "enter_to_submit": "Нажми Enter, чтобы применить",
