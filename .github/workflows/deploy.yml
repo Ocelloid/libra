@@ -1,0 +1,52 @@
+# Update to match your values: branch_name, app_name, SSH key name on GitHub from previous step if changed, server ip, username, port, and server Node pathname (using 'which pm2' on server to get path)
+
+name: Deploy Libra
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Check Node.js version
+        run: node -v
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.1
+        with:
+          ssh-private-key: ${{ secrets.PRIVATEKEYFOR19467204109 }}
+
+      - name: Deploy to Ubuntu
+        env:
+          HOST: 194.67.204.109
+          USERNAME: root
+          TARGET_DIR: /var/www/libra
+          APP_NAME: libra
+          PORT: 3000
+        run: |
+          ssh -o StrictHostKeyChecking=no $USERNAME@$HOST << EOF
+            export PATH=/root/.nvm/versions/node/v20.12.2/bin/pm2:$PATH #'which pm2' command on terminal will give the right path
+            cd $TARGET_DIR
+            git pull origin ${GITHUB_REF#refs/heads/main} 
+            npm install
+            npm run build
+            if pm2 list | grep -q $APP_NAME; then
+              echo "Restarting application: $APP_NAME"
+              pm2 restart $APP_NAME
+            else
+              echo "Starting application: $APP_NAME"
+              pm2 start npm --name $APP_NAME -- start -- --port=$PORT
+            fi            
+            pm2 save
+          EOF
