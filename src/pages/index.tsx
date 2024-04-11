@@ -11,6 +11,7 @@ const Home: NextPage = () => {
   const [styleProp, setStyleProp] = useState({});
   const { theme } = useTheme();
   const { t } = useTranslation(["ru", "en"]);
+  console.log("deployed");
 
   useEffect(() => {
     const newStyleProp = {
