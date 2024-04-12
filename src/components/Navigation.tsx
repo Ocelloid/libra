@@ -41,7 +41,7 @@ const Navigation = () => {
 
   if (sessionData)
     return (
-      <nav className="absolute left-0 top-0 z-10 flex w-full flex-col items-center justify-between gap-8 bg-transparent p-7 backdrop-blur-md md:fixed md:flex-row md:gap-0">
+      <nav className="iphone-backdrop absolute left-0 top-0 z-10 flex w-full flex-col items-center justify-between gap-8 bg-transparent p-7 md:fixed md:flex-row md:gap-0">
         <SeeInvitesModal
           isOpen={isInvitesOpen}
           onOpenChange={onInvitesOpenChange}

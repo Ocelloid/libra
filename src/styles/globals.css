@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+.iphone-backdrop::before {
+  backdrop-filter: blur(10px) contrast(100%);
+  -webkit-backdrop-filter: blur(10px) contrast(100%);
+}
+.iphone-backdrop {
+  backdrop-filter: blur(10px) contrast(100%);
+  -webkit-backdrop-filter: blur(10px) contrast(100%);
+}
+
 html,
 body {
   @apply bg-gray-950;
