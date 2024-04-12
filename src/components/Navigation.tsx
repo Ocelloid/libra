@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { XMarkIcon, ScaleIcon } from "@heroicons/react/24/outline";
+import { XMarkIcon, ScaleIcon, Bars3Icon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import { signOut, useSession } from "next-auth/react";
 import { useTranslation } from "next-i18next";
@@ -50,12 +50,16 @@ const Navigation = () => {
         <div className="flex w-full items-center justify-between font-poppins font-bold lowercase tracking-tight dark:text-neutral-100 md:text-4xl">
           <Link
             href="/"
+            onClick={() => {
+              setIsOpen(false);
+              pathOpen("");
+            }}
             className="hover:text-gray-700 dark:hover:text-gray-300"
           >
-            Libra
+            <ScaleIcon width={30} />
           </Link>
           <div className="flex md:hidden" onClick={() => setIsOpen(!isOpen)}>
-            {isOpen ? <XMarkIcon width={30} /> : <ScaleIcon width={30} />}
+            {isOpen ? <XMarkIcon width={30} /> : <Bars3Icon width={30} />}
           </div>
         </div>
         <ul
