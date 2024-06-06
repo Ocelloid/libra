@@ -38,6 +38,15 @@ const MyApp: AppType<{ session: Session | null }> = ({
             <Component {...pageProps} />
             <Navigation />
           </SessionProvider>
+          <div className="fixed bottom-0 flex h-6 w-full flex-col justify-between bg-slate-950 px-12 py-1">
+            <a
+              href="https://ocelloid.com"
+              target="_blank"
+              className="ml-auto text-xs"
+            >
+              © Ocelloid 2024
+            </a>
+          </div>
         </div>
       </NextThemesProvider>
     </NextUIProvider>
